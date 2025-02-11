@@ -2,6 +2,7 @@
 
 import { signupInput } from "@/schemas/userSchema";
 import axios from "axios";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 
@@ -18,10 +19,21 @@ export function Signup(){
 
     async function sendRequest(){
         try{
-            const respose = await axios.post("/api/user/signup",
+            const response = await axios.post("/api/user/signup",
                 postInputs
             );
-            router.push("/home")
+
+            if(response){
+                await signIn("credentials", {
+                    username: postInputs.email,
+                    password: postInputs.password,
+                    redirect: false
+                });
+                router.push("/home")
+            }else{
+                console.error("Signup failed")
+            }
+            
         }
         catch(error){
             alert("error while signing up");

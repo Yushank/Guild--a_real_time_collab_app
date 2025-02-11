@@ -32,87 +32,92 @@ function KanbanBoard() {
 
     console.log(columns);
     return (
-        <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[40px]">
-            <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} sensors={sensors}>
-                <div className="m-auto flex gap-4">
-                    <div className="flex gap-4">
-                        <SortableContext items={columnsId}>
-                            {columns.map(col => (
+        <div>
+            <div>
+                <h1 className="font-bold ">Demo Board</h1>
+            </div>
+            <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[40px]">
+                <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} sensors={sensors}>
+                    <div className="m-auto flex gap-4">
+                        <div className="flex gap-4">
+                            <SortableContext items={columnsId}>
+                                {columns.map(col => (
+                                    <ColumnContainer
+                                        key={col.id}
+                                        column={col}
+                                        deleteColumn={deleteColumn}
+                                        updateColumn={updateColumn}
+                                        createTask={createTask}
+                                        tasks={tasks.filter(task => task.columnId === col.id)}
+                                        deleteTask={deleteTask}
+                                        updateTask={updateTask}></ColumnContainer>
+                                ))}
+                            </SortableContext>
+                        </div>
+
+                        {/* switches button and input box */}
+                        {/* initial condition false button visible, when button clicked, condition true, button hide, input box visible. Create button clicked, condition become flase again add list button visible, input hidden */}
+                        {!isAddingColumn ? (
+                            <button
+                                className="h-[60px] w-[50px] min-w-[350px] cursor-pointer rounded-lg bg-black border-2 border-black p-2 ring-rose-500 hover:ring-2 text-white flex gap-2"
+                                onClick={() => setIsAddingColumn(true)}
+                            >
+                                Add another list
+                            </button>
+                        ) : (
+                            <div className="flex flex-col gap-4">
+                                {/* Input Box */}
+                                <input
+                                    className="h-[60px] w-[50px] min-w-[350px] text-white bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                                    type="text"
+                                    placeholder="Enter column title"
+                                    value={newColumnTitle}
+                                    onChange={(e) => setNewColumnTitle(e.target.value)}
+                                />
+                                {/* Button Group */}
+                                <div className="flex gap-4">
+                                    <button
+                                        className="flex-1 h-12 cursor-pointer rounded-lg bg-black border-2 border-black p-2 hover:ring-2 hover:ring-rose-500 text-white flex items-center justify-center gap-2"
+                                        onClick={() => {
+                                            createNewColumn();
+                                        }}
+                                    >
+                                        <PlusIcon /> Add List
+                                    </button>
+                                    <button
+                                        className="flex-1 h-12 cursor-pointer rounded-lg bg-gray-600 border-2 border-gray-600 p-2 text-white hover:bg-gray-700"
+                                        onClick={() => cancelCreateColumn()}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {createPortal(
+                        <DragOverlay>
+                            {activeColumn && (
                                 <ColumnContainer
-                                    key={col.id}
-                                    column={col}
+                                    column={activeColumn}
                                     deleteColumn={deleteColumn}
                                     updateColumn={updateColumn}
                                     createTask={createTask}
-                                    tasks={tasks.filter(task => task.columnId === col.id)}
+                                    tasks={tasks.filter(task => task.columnId === activeColumn.id)}
                                     deleteTask={deleteTask}
-                                    updateTask={updateTask}></ColumnContainer>
-                            ))}
-                        </SortableContext>
-                    </div>
-
-                    {/* switches button and input box */}
-                    {/* initial condition false button visible, when button clicked, condition true, button hide, input box visible. Create button clicked, condition become flase again add list button visible, input hidden */}
-                    {!isAddingColumn ? (
-                        <button
-                            className="h-[60px] w-[50px] min-w-[350px] cursor-pointer rounded-lg bg-black border-2 border-black p-2 ring-rose-500 hover:ring-2 text-white flex gap-2"
-                            onClick={() => setIsAddingColumn(true)}
-                        >
-                            Add another list
-                        </button>
-                    ) : (
-                        <div className="flex flex-col gap-4">
-                            {/* Input Box */}
-                            <input
-                                className="h-[60px] w-[50px] min-w-[350px] text-white bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-                                type="text"
-                                placeholder="Enter column title"
-                                value={newColumnTitle}
-                                onChange={(e) => setNewColumnTitle(e.target.value)}
-                            />
-                            {/* Button Group */}
-                            <div className="flex gap-4">
-                                <button
-                                    className="flex-1 h-12 cursor-pointer rounded-lg bg-black border-2 border-black p-2 hover:ring-2 hover:ring-rose-500 text-white flex items-center justify-center gap-2"
-                                    onClick={() => {
-                                        createNewColumn();
-                                    }}
-                                >
-                                    <PlusIcon /> Add List
-                                </button>
-                                <button
-                                    className="flex-1 h-12 cursor-pointer rounded-lg bg-gray-600 border-2 border-gray-600 p-2 text-white hover:bg-gray-700"
-                                    onClick={() => cancelCreateColumn()}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
+                                    updateTask={updateTask}
+                                />
+                            )}
+                            {activeTask && (
+                                <TaskCard
+                                    task={activeTask}
+                                    deleteTask={deleteTask}
+                                    updateTask={updateTask} />)}
+                        </DragOverlay>,
+                        document.body
                     )}
-                </div>
-
-                {createPortal(
-                    <DragOverlay>
-                        {activeColumn && (
-                            <ColumnContainer
-                                column={activeColumn}
-                                deleteColumn={deleteColumn}
-                                updateColumn={updateColumn}
-                                createTask={createTask}
-                                tasks={tasks.filter(task => task.columnId === activeColumn.id)}
-                                deleteTask={deleteTask}
-                                updateTask={updateTask}
-                            />
-                        )}
-                        {activeTask && (
-                            <TaskCard
-                                task={activeTask}
-                                deleteTask={deleteTask}
-                                updateTask={updateTask} />)}
-                    </DragOverlay>,
-                    document.body
-                )}
-            </DndContext>
+                </DndContext>
+            </div>
         </div>
     )
 
@@ -245,7 +250,7 @@ function KanbanBoard() {
                 const activeTaskIndex = tasks.findIndex((t) => t.id === activeId);
                 const overTaskIndex = tasks.findIndex((t) => t.id === overId);
 
-                if(activeTaskIndex === -1 || overTaskIndex === -1){
+                if (activeTaskIndex === -1 || overTaskIndex === -1) {
                     return tasks; //prevents accessing undefined index
                 }
 
@@ -270,7 +275,7 @@ function KanbanBoard() {
             setTasks((tasks) => {
                 const activeTaskIndex = tasks.findIndex((t) => t.id === activeId);
 
-                if(activeTaskIndex == -1){
+                if (activeTaskIndex == -1) {
                     return tasks; //prevents accessing undefined index
                 }
 

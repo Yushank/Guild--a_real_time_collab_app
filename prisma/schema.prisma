@@ -45,7 +45,7 @@ model List {
 
 model Cards {
   id Int @id @default(autoincrement())
-  title String
+  content String
   dueDate DateTime?
   priority Int?
   list List @relation(fields: [listId], references: [id])

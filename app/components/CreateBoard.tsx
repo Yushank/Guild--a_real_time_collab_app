@@ -13,7 +13,8 @@ function CreateBoard() {
             });
             console.log(response);
 
-            setIsAdding(false)
+            setIsAdding(false);
+            setBoardTitle("");
         }
         catch(error){
             alert('Error while creating board')

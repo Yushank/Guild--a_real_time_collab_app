@@ -1,3 +1,4 @@
+import socket from "@/utils/socket";
 import axios from "axios";
 import { useEffect, useState } from "react"
 
@@ -34,6 +35,14 @@ export const useBoards = () => {
                 setBoards(response.data)
                 setIsLoading(false)
             });
+
+            socket.on("board", (board) => {
+                setBoards((prev) => [...prev, board])  //update list in real time (got from io.emit in boards/route.ts post route)
+            });
+
+            return () => {
+                socket.off("board");
+            }
     }, []);
 
     return { boards, isLoading }

@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import PlusIcon from "../icons/PlusIcon"
 import { Column, Id, Task } from "../types";
 import ColumnContainer from "./ColumnContainer";
@@ -8,6 +8,8 @@ import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, P
 import { arrayMove, SortableContext } from "@dnd-kit/sortable"
 import { createPortal } from "react-dom";
 import TaskCard from "./TaskCard";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
 
 function KanbanBoard() {
@@ -28,7 +30,10 @@ function KanbanBoard() {
                 distance: 3, //3px
             }
         })
-    )
+    );
+
+    const params = useParams();
+    const boardId = parseInt(Array.isArray(params.id) ? params.id[0] : params.id ?? "");
 
     console.log(columns);
     return (
@@ -121,16 +126,24 @@ function KanbanBoard() {
         </div>
     )
 
+    async function createNewColumn() {
+        const createdColumn = await submitListHandler(newColumnTitle, boardId);
 
-    function createNewColumn() {
+        console.log("created column data:", createdColumn)
+
+        if (!createdColumn || !createdColumn.list.id) {
+            console.error("Failed to create list! :  no id");
+            return;  // Stop execution if API call fails
+        }
+
         const columnToAdd: Column = {
-            id: generateId(),
+            id: createdColumn.list.id,  // Use real listId from backend
             title: newColumnTitle,
         };
 
-        setColumns([...columns, columnToAdd]);
+        setColumns(prevColumns => [...prevColumns, columnToAdd]); // Add to state with correct ID
         setIsAddingColumn(false);
-        setNewColumnTitle("")
+        setNewColumnTitle("");
     }
 
     function cancelCreateColumn() {
@@ -157,13 +170,21 @@ function KanbanBoard() {
         setColumns(newColumns);
     }
 
-    function createTask(columnId: Id, content: string) {
+    async function createTask(columnId: Id, content: string) {
+        const createdCard = await submitCardHandler(content, boardId, columnId);
+
+        console.log("Created task data:", createdCard);
+
+        if(!createdCard || !createdCard.card.id){
+            console.log("Failed to create card: no id")
+            return;
+        }
+
         const newTask: Task = {
-            id: generateId(),
+            id: createdCard.card.id,
             columnId,
             content
         }
-
         setTasks([...tasks, newTask]);
     }
 
@@ -296,9 +317,37 @@ function KanbanBoard() {
     }
 }
 
-function generateId() {
-    // Generate a random number between 0 and 10000
-    return Math.floor(Math.random() * 10001);
+
+const submitListHandler = async (name: string, boardId: Id) => {
+    try {
+        const response = await axios.post(`/api/boards/${boardId}/lists`, {
+            name,
+            boardId
+        });
+
+        console.log("Created List:", response.data);  // Check if response contains the ID
+        return response.data;  // Return the created list
+    } catch (error) {
+        console.error("Error creating list:", error);
+        alert("Failed to create list!");
+        return null;
+    }
+};
+
+const submitCardHandler = async (content: string, boardId: Id, columnId: Id) => {
+    try {
+        console.log("Content is here")
+        const response = await axios.post(`/api/boards/${boardId}/lists/${columnId}/cards`, {
+            content: content,
+            listId: columnId
+        });
+
+        console.log("Created Card:", response.data);
+        return response.data;
+    } catch (error) {
+        alert('Error while creating card');
+        console.log(error)
+    }
 }
 
 export default KanbanBoard

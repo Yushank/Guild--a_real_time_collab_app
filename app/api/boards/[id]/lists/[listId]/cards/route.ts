@@ -6,6 +6,7 @@ import client from '@/db'
 
 export async function POST(req: NextRequest){
     const {content, listId} = await req.json();
+    console.log("Recieved data", {content, listId})
 
     try{
         const card = await client.cards.create({

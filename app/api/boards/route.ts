@@ -4,8 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import client from "@/db"
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-
-
+import { io } from "@/lib/server";
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
@@ -51,6 +50,8 @@ export async function POST(req: NextRequest) {
                 members: true,
             }
         });
+
+        io.emit("board", board);  //broadcast board
 
         return NextResponse.json({
             board

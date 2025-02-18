@@ -7,6 +7,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { useMemo, useState } from "react";
 import PlusIcon from "../icons/PlusIcon";
 import TaskCard from "./TaskCard";
+import { useCard } from "../hooks";
 
 
 interface Props {
@@ -17,14 +18,17 @@ interface Props {
     tasks: Task[];
     deleteTask: (id: Id) => void
     updateTask: (id: Id, content: string) => void;
+    boardId: Id
 }
 
 function ColumnContainer(props: Props) {
-    const { column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask } = props;
+    const { column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask, boardId } = props;
 
     const [editMode, setEditMode] = useState(false);
     const [isAddingTask, setIsAddingTask] = useState(false);
     const [newTask, setNewTask] = useState("");
+    const listId = column.id;
+    const { cards } = useCard(boardId, listId)
 
     const tasksId = useMemo(() => {
         return tasks.map((task) => task.id)
@@ -93,7 +97,7 @@ function ColumnContainer(props: Props) {
                 <div>
                     <div>
                         <SortableContext items={tasksId}>
-                            {tasks.map(task => (
+                            {cards.map(task => (
                                 <TaskCard key={task.id} task={task} deleteTask={deleteTask} updateTask={updateTask}></TaskCard>
                             ))}
                         </SortableContext>

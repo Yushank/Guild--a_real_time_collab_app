@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import PlusIcon from "../icons/PlusIcon"
-import { Column, Id, Task } from "../types";
+import { Board, Column, Id, Task } from "../types";
 import ColumnContainer from "./ColumnContainer";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { arrayMove, SortableContext } from "@dnd-kit/sortable"
@@ -10,13 +10,23 @@ import { createPortal } from "react-dom";
 import TaskCard from "./TaskCard";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import { useList } from "../hooks";
 
 
-function KanbanBoard() {
+interface KanbanBoardProps {
+    board: Board
+}
+
+function KanbanBoard({board}: KanbanBoardProps) {
     const [columns, setColumns] = useState<Column[]>([]);
+    const params = useParams();
+    console.log("Params from kanbanboard:", params)
+    const boardId = parseInt(Array.isArray(params.boardId) ? params.boardId[0] : params.boardId ?? "");
+    console.log("Board Id in kanban board fetched:", boardId)
+    const {lists} = useList({boardId})
     const [isAddingColumn, setIsAddingColumn] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState("");
-    const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
+    const columnsId = useMemo(() => lists.map((col) => col.id), [lists]);
 
     const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 
@@ -32,21 +42,18 @@ function KanbanBoard() {
         })
     );
 
-    const params = useParams();
-    const boardId = parseInt(Array.isArray(params.id) ? params.id[0] : params.id ?? "");
-
-    console.log(columns);
+    console.log(lists);
     return (
         <div>
             <div>
-                <h1 className="font-bold ">Demo Board</h1>
+                <h1 className="font-bold text-black">{board.name}</h1>
             </div>
             <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[40px]">
                 <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} sensors={sensors}>
                     <div className="m-auto flex gap-4">
                         <div className="flex gap-4">
                             <SortableContext items={columnsId}>
-                                {columns.map(col => (
+                                {lists.map(col => (
                                     <ColumnContainer
                                         key={col.id}
                                         column={col}
@@ -55,7 +62,8 @@ function KanbanBoard() {
                                         createTask={createTask}
                                         tasks={tasks.filter(task => task.columnId === col.id)}
                                         deleteTask={deleteTask}
-                                        updateTask={updateTask}></ColumnContainer>
+                                        updateTask={updateTask}
+                                        boardId = {boardId}></ColumnContainer>
                                 ))}
                             </SortableContext>
                         </div>
@@ -111,6 +119,7 @@ function KanbanBoard() {
                                     tasks={tasks.filter(task => task.columnId === activeColumn.id)}
                                     deleteTask={deleteTask}
                                     updateTask={updateTask}
+                                    boardId={boardId}
                                 />
                             )}
                             {activeTask && (

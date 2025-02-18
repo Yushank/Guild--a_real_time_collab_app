@@ -10,3 +10,16 @@ export type Task = {
     columnId: Id;
     content: string
 }
+
+export type List = {
+    id: number,
+    title: string,
+    boardId: number,
+    cards: Task[]
+}
+
+export type Board = {
+    id: number,
+    name: string,
+    list: List[],
+}

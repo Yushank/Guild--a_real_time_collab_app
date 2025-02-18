@@ -18,11 +18,11 @@ export async function GET(req: NextRequest){
 
     try{
         const url = new URL(req.url);
-        const id = parseInt(url.pathname.split('/').pop() || '', 10);
+        const boardId = parseInt(url.pathname.split('/').pop() || '', 10);
 
         const board = await client.board.findFirst({
             where:{
-                id: id,
+                id: boardId,
                 members: {
                     some: {
                         id: userId

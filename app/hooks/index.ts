@@ -52,35 +52,35 @@ export const useBoards = () => {
 
 
 export const useBoard = ({ id }: { id: string }) => {
-    console.log("📌 useBoard Hook is Called!"); // ✅ Log if function runs
+    // console.log("📌 useBoard Hook is Called!"); // ✅ Log if function runs
     const [board, setBoard] = useState<Board | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        console.log("🛠 useEffect triggered with id:", id);
+        // console.log("🛠 useEffect triggered with id:", id);
 
         if (!id || id === "") {
-            console.error("❌ useEffect Stopped: ID is missing or empty.");
+            // console.error("❌ useEffect Stopped: ID is missing or empty.");
             setIsLoading(false);
             setError("Invalid Board ID")
             return;
         }
 
         setIsLoading(true);
-        console.log(`Fetching log with ID : ${id}`);
-        console.log(`🚀 Sending API Request: /api/boards/${id}`);
+        // console.log(`Fetching log with ID : ${id}`);
+        // console.log(`🚀 Sending API Request: /api/boards/${id}`);
 
         const fetchBoard = async () => {
             try {
                 const response = await axios.get(`/api/boards/${id}`)
-                console.log("✅ API Response:", response);
-                console.log("Fetched board:", response.data.board); //data.board because route is returning object board:{}
+                // console.log("✅ API Response:", response);
+                // console.log("Fetched board:", response.data.board); //data.board because route is returning object board:{}
                 setBoard(response.data.board);
                 setError(null);
                 setIsLoading(false);
             } catch (error) {
-                console.error("❌ Error fetching board:", error); // ✅ Log full error
+                // console.error("❌ Error fetching board:", error); // ✅ Log full error
             }
         }
         fetchBoard();
@@ -96,13 +96,13 @@ export const useBoard = ({ id }: { id: string }) => {
 
 export const useList = ({boardId}:{boardId: Id}) => {
     const [lists, setLists] = useState<list[]>([]);
-    console.log("board Id from prop in useList:", boardId)
+    // console.log("board Id from prop in useList:", boardId)
 
     useEffect(() => {
         const fetchLists = async () => {
             try {
                 const response = await axios.get(`/api/boards/${boardId}/lists`);
-                console.log("Fetched lists:", response.data);
+                // console.log("Fetched lists:", response.data);
                 setLists(response.data)
             } catch (error) {
                 console.error("Error fetching lists:", error);
@@ -111,7 +111,7 @@ export const useList = ({boardId}:{boardId: Id}) => {
         fetchLists();
 
         const handleNewList = (list: any) => {
-            console.log("New list received via socket:", list);
+            // console.log("New list received via socket:", list);
             setLists((prev) => [...prev, list])
         }
         socket.on("list", handleNewList)
@@ -121,7 +121,7 @@ export const useList = ({boardId}:{boardId: Id}) => {
         }
     }, [boardId]);
 
-    return { lists };
+    return { lists, setLists };
 }
 
 export const useCard = (boardId: Id, listId: Id) => {
@@ -131,7 +131,7 @@ export const useCard = (boardId: Id, listId: Id) => {
         const fetchCards = async () => {
             try {
                 const response = await axios.get(`/api/boards/${boardId}/lists/${listId}/cards`);
-                console.log("Fetched cards:", response.data);
+                // console.log("Fetched cards:", response.data);
                 setCards(response.data);
             } catch (error) {
                 console.error("Error fetching cards:", error)
@@ -140,7 +140,7 @@ export const useCard = (boardId: Id, listId: Id) => {
         fetchCards();
 
         const handleNewCard = (card: any) => {
-            console.log("New card received via socket:", card);
+            // console.log("New card received via socket:", card);
             if (card.listId === listId) {  // this to check and add only those cards whose listId match the hook calling column container id
                 setCards((prev) => [...prev, card])
             }

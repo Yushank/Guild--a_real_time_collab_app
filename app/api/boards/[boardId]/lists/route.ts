@@ -11,10 +11,15 @@ export async function POST(req: NextRequest) {
     const { name, boardId } = await req.json();
 
     try {
+        const listCount = await client.list.count({
+            where: {boardId}
+        });
+
         const list = await client.list.create({
             data: {
                 title: name,
-                boardId: boardId
+                boardId: boardId,
+                order: listCount
             }
         });
 
@@ -49,7 +54,7 @@ export async function GET(req: NextRequest, {params}: {params: Promise<{boardId:
                 boardId: boardId
             },
             orderBy: {
-                createdAt: "asc"
+                order: "asc"
             }
         });
         console.log("fetched lists:",lists)
@@ -58,5 +63,37 @@ export async function GET(req: NextRequest, {params}: {params: Promise<{boardId:
     } catch (error) {
         console.error("Error fetching lists:", error);
         return NextResponse.json({ msg: `Failed to fetch lists: ${error}` }, { status: 500 });
+    }
+}
+
+
+export async function PUT(req: NextRequest, {params}:{params: Promise<{boardId: string}>}){
+    try{
+        const {orderedListIds} = await req.json();
+        console.log("ordered list id received:",orderedListIds)
+        const boardId = parseInt((await params).boardId);
+
+        await prisma?.$transaction(
+            orderedListIds.map((listId: number, index: number) =>
+            prisma?.list.update({
+                where: {
+                    id: listId
+                },
+                data: {
+                    order: index
+                }
+            })
+            )
+        );
+
+        return NextResponse.json({
+            msg: "List reordered successfully"
+        });
+    }
+    catch(error){
+        console.error("Error reordering list", error);
+        return NextResponse.json({
+            msg:"failed to reorder list"
+        }, {status: 500})
     }
 }

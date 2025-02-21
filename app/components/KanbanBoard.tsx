@@ -20,10 +20,10 @@ interface KanbanBoardProps {
 function KanbanBoard({board}: KanbanBoardProps) {
     const [columns, setColumns] = useState<Column[]>([]);
     const params = useParams();
-    console.log("Params from kanbanboard:", params)
+    // console.log("Params from kanbanboard:", params)
     const boardId = parseInt(Array.isArray(params.boardId) ? params.boardId[0] : params.boardId ?? "");
-    console.log("Board Id in kanban board fetched:", boardId)
-    const {lists} = useList({boardId})
+    // console.log("Board Id in kanban board fetched:", boardId)
+    const {lists, setLists} = useList({boardId})
     const [isAddingColumn, setIsAddingColumn] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState("");
     const columnsId = useMemo(() => lists.map((col) => col.id), [lists]);
@@ -244,13 +244,19 @@ function KanbanBoard({board}: KanbanBoardProps) {
             return;
         }
 
-        setColumns(columns => {
-            const activeColumnIndex = columns.findIndex(col => col.id === activeColumnId);
+        setLists(lists => {
+            const activeColumnIndex = lists.findIndex(col => col.id === activeColumnId);
 
-            const overColumnIndex = columns.findIndex(col => col.id === overColumnId);
+            const overColumnIndex = lists.findIndex(col => col.id === overColumnId);
 
-            return arrayMove(columns, activeColumnIndex, overColumnIndex)
-        })
+            const newColumnOrder = arrayMove(lists, activeColumnIndex, overColumnIndex);
+
+            console.log("newColumnOrder:", newColumnOrder)
+
+            updateListHandler(newColumnOrder.map(col => col.id), boardId);
+
+            return newColumnOrder
+        });
     }
 
 
@@ -334,7 +340,7 @@ const submitListHandler = async (name: string, boardId: Id) => {
             boardId
         });
 
-        console.log("Created List:", response.data);  // Check if response contains the ID
+        // console.log("Created List:", response.data);  // Check if response contains the ID
         return response.data;  // Return the created list
     } catch (error) {
         console.error("Error creating list:", error);
@@ -343,15 +349,31 @@ const submitListHandler = async (name: string, boardId: Id) => {
     }
 };
 
+const updateListHandler = async(orderedListIds: Id[], boardId: Id) =>{
+    try {
+        // const orderedListIds = columns.map(col=> col.id); 
+        console.log("orderedListIds:", orderedListIds)
+        const response = await axios.put(`/api/boards/${boardId}/lists`,{
+            orderedListIds
+        });
+        console.log("Updated lists order:", response.data);
+        return response.data
+    }
+    catch(error){
+        console.error("Error updating lists order:", error);
+        return null
+    }
+}
+
 const submitCardHandler = async (content: string, boardId: Id, columnId: Id) => {
     try {
-        console.log("Content is here")
+        // console.log("Content is here")
         const response = await axios.post(`/api/boards/${boardId}/lists/${columnId}/cards`, {
             content: content,
             listId: columnId
         });
 
-        console.log("Created Card:", response.data);
+        // console.log("Created Card:", response.data);
         return response.data;
     } catch (error) {
         alert('Error while creating card');

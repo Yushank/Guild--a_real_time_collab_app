@@ -40,7 +40,7 @@ export async function GET(req: NextRequest, {params}: {params: {listId: string}}
             }, {status: 400})
         }
 
-        const listId = parseInt(params.listId)
+        const listId = parseInt((await params).listId)
         const cards = await client.cards.findMany({
             where:{
                 listId: listId

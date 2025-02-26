@@ -7,7 +7,7 @@ export type Column = {
 
 export type Task = {
     id: Id;
-    columnId: Id;
+    listId: Id;
     content: string
 }
 
@@ -22,4 +22,17 @@ export type Board = {
     id: number,
     name: string,
     list: List[],
+}
+
+export type Card = {
+    id: Id;
+    listId: Id;
+    content: string
+}
+
+export type updatedCardOrder = {
+        order: number;
+        id: Id;
+        listId: Id;
+        content: string;
 }

@@ -1,7 +1,7 @@
 import socket from "@/utils/socket";
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { Board, Id, Task } from "../types";
+import { Board, Card, Id, Task } from "../types";
 
 
 interface cards {
@@ -80,7 +80,7 @@ export const useBoard = ({ id }: { id: string }) => {
                 setError(null);
                 setIsLoading(false);
             } catch (error) {
-                // console.error("❌ Error fetching board:", error); // ✅ Log full error
+                console.error("❌ Error fetching board:", error); // ✅ Log full error
             }
         }
         fetchBoard();
@@ -94,7 +94,7 @@ export const useBoard = ({ id }: { id: string }) => {
 }
 
 
-export const useList = ({boardId}:{boardId: Id}) => {
+export const useList = ({ boardId }: { boardId: Id }) => {
     const [lists, setLists] = useState<list[]>([]);
     // console.log("board Id from prop in useList:", boardId)
 
@@ -125,7 +125,7 @@ export const useList = ({boardId}:{boardId: Id}) => {
 }
 
 export const useCard = (boardId: Id, listId: Id) => {
-    const [cards, setCards] = useState<Task[]>([]);
+    const [cards, setCards] = useState<Card[]>([]);
 
     useEffect(() => {
         const fetchCards = async () => {
@@ -153,4 +153,39 @@ export const useCard = (boardId: Id, listId: Id) => {
     }, [listId]);
 
     return { cards };
+}
+
+
+export const useAllCards = ({ boardId }: { boardId: Id }) => {
+    const [allCards, setAllCards] = useState<Card[]>([]);
+
+    useEffect(() => {
+        const fetchAllCards = async () => {
+            try {
+                const response = await axios.get(`/api/boards/${boardId}`)
+                const cards = response.data.board.list.flatMap((list: list) => list.cards);
+                // console.log("allCards fetched from board route:", cards)
+                setAllCards(cards)
+            }
+            catch (error) {
+                console.error("Error fetching all cards:", error)
+            }
+        }
+
+        fetchAllCards();
+
+        const handleNewCard = (card: any) => {
+            // console.log("New card received via socket:", card);
+            setAllCards((prev) => [...prev, card])
+
+        }
+        socket.on("card", handleNewCard);
+
+        return () => {
+            socket.off("card", handleNewCard)
+        }
+
+    }, [boardId]);
+
+    return { allCards, setAllCards };
 }

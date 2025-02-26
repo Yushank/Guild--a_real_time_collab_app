@@ -2,7 +2,7 @@
 
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import BinIcon from "../icons/BinIcon";
-import { Column, Id, Task } from "../types"
+import { Card, Column, Id, Task } from "../types"
 import { CSS } from "@dnd-kit/utilities"
 import { useMemo, useState } from "react";
 import PlusIcon from "../icons/PlusIcon";
@@ -15,7 +15,7 @@ interface Props {
     deleteColumn: (id: Id) => void;
     updateColumn: (id: Id, title: string) => void;
     createTask: (columnId: Id, content: string) => void;
-    tasks: Task[];
+    tasks: Card[];
     deleteTask: (id: Id) => void
     updateTask: (id: Id, content: string) => void;
     boardId: Id
@@ -97,7 +97,7 @@ function ColumnContainer(props: Props) {
                 <div>
                     <div>
                         <SortableContext items={tasksId}>
-                            {cards.map(task => (
+                            {tasks.map(task => (
                                 <TaskCard key={task.id} task={task} deleteTask={deleteTask} updateTask={updateTask}></TaskCard>
                             ))}
                         </SortableContext>

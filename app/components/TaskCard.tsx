@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useState } from 'react'
-import { Id, Task } from '../types'
+import { Card, Id, Task } from '../types'
 import BinIcon from '../icons/BinIcon'
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 interface Props {
-    task: Task;
+    task: Card;
     deleteTask: (id: Id) => void;
     updateTask: (id: Id, content: string) => void;
 }
@@ -18,7 +18,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
     const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
         id: task.id,
         data: {
-            type: "Task",
+            type: "Card",
             task
         },
         disabled: editMode

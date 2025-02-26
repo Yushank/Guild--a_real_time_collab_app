@@ -10,10 +10,16 @@ export async function POST(req: NextRequest){
     console.log("Recieved data", {content, listId})
 
     try{
+        const cardCount = await  client.cards.count({
+            where:{
+                listId
+            }
+        })
         const card = await client.cards.create({
             data: {
                 content: content,
-                listId: listId
+                listId: listId,
+                order: cardCount
             }
         });
 

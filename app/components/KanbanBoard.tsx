@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import PlusIcon from "../icons/PlusIcon"
-import { Board, Column, Id, Task } from "../types";
+import { Board, Card, Column, Id, Task, updatedCardOrder } from "../types";
 import ColumnContainer from "./ColumnContainer";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { arrayMove, SortableContext } from "@dnd-kit/sortable"
@@ -10,20 +10,22 @@ import { createPortal } from "react-dom";
 import TaskCard from "./TaskCard";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import { useList } from "../hooks";
+import { useAllCards, useList } from "../hooks";
 
 
 interface KanbanBoardProps {
     board: Board
 }
 
-function KanbanBoard({board}: KanbanBoardProps) {
+function KanbanBoard({ board }: KanbanBoardProps) {
     const [columns, setColumns] = useState<Column[]>([]);
     const params = useParams();
     // console.log("Params from kanbanboard:", params)
     const boardId = parseInt(Array.isArray(params.boardId) ? params.boardId[0] : params.boardId ?? "");
     // console.log("Board Id in kanban board fetched:", boardId)
-    const {lists, setLists} = useList({boardId})
+    const { lists, setLists } = useList({ boardId })
+    const { allCards, setAllCards } = useAllCards({ boardId })
+    // console.log("All cards in kanbanboard:", allCards)
     const [isAddingColumn, setIsAddingColumn] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState("");
     const columnsId = useMemo(() => lists.map((col) => col.id), [lists]);
@@ -32,7 +34,7 @@ function KanbanBoard({board}: KanbanBoardProps) {
 
     const [tasks, setTasks] = useState<Task[]>([]);
 
-    const [activeTask, setActiveTask] = useState<Task | null>(null);
+    const [activeTask, setActiveTask] = useState<Card | null>(null);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -60,10 +62,10 @@ function KanbanBoard({board}: KanbanBoardProps) {
                                         deleteColumn={deleteColumn}
                                         updateColumn={updateColumn}
                                         createTask={createTask}
-                                        tasks={tasks.filter(task => task.columnId === col.id)}
+                                        tasks={allCards.filter(task => task.listId === col.id)}
                                         deleteTask={deleteTask}
                                         updateTask={updateTask}
-                                        boardId = {boardId}></ColumnContainer>
+                                        boardId={boardId}></ColumnContainer>
                                 ))}
                             </SortableContext>
                         </div>
@@ -116,7 +118,7 @@ function KanbanBoard({board}: KanbanBoardProps) {
                                     deleteColumn={deleteColumn}
                                     updateColumn={updateColumn}
                                     createTask={createTask}
-                                    tasks={tasks.filter(task => task.columnId === activeColumn.id)}
+                                    tasks={allCards.filter(task => task.listId === activeColumn.id)}
                                     deleteTask={deleteTask}
                                     updateTask={updateTask}
                                     boardId={boardId}
@@ -164,7 +166,7 @@ function KanbanBoard({board}: KanbanBoardProps) {
         const filteredColumns = columns.filter(col => col.id != id);
         setColumns(filteredColumns);
 
-        const newTasks = tasks.filter((t) => t.columnId !== id);
+        const newTasks = tasks.filter((t) => t.listId !== id);
         setTasks(newTasks)
     }
 
@@ -184,17 +186,17 @@ function KanbanBoard({board}: KanbanBoardProps) {
 
         console.log("Created task data:", createdCard);
 
-        if(!createdCard || !createdCard.card.id){
+        if (!createdCard || !createdCard.card.id) {
             console.log("Failed to create card: no id")
             return;
         }
 
-        const newTask: Task = {
-            id: createdCard.card.id,
-            columnId,
-            content
-        }
-        setTasks([...tasks, newTask]);
+        // const newTask: Card = {
+        //     id: createdCard.card.id,
+        //     listId,
+        //     content
+        // }
+        // setTasks([...tasks, newTask]);
     }
 
     function deleteTask(id: Id) {
@@ -221,7 +223,7 @@ function KanbanBoard({board}: KanbanBoardProps) {
             return;
         }
 
-        if (event.active.data.current?.type === "Task") {
+        if (event.active.data.current?.type === "Card") {
             setActiveTask(event.active.data.current.task);
             return;
         }
@@ -253,7 +255,7 @@ function KanbanBoard({board}: KanbanBoardProps) {
 
             console.log("newColumnOrder:", newColumnOrder)
 
-            updateListHandler(newColumnOrder.map(col => col.id), boardId);
+            submitUpdatedListOrder(newColumnOrder.map(col => col.id), boardId);
 
             return newColumnOrder
         });
@@ -273,62 +275,67 @@ function KanbanBoard({board}: KanbanBoardProps) {
             return;
         }
 
-        const isActiveTask = active.data.current?.type === "Task";
-        const isOverTask = active.data.current?.type === "Task";
+        const isActiveTask = active.data.current?.type === "Card";
+        const isOverTask = active.data.current?.type === "Card";
+        const isOverColumn = active.data.current?.type === "Column";
 
         if (!isActiveTask) {
             return;
         }
 
-        // In dropping a task over another task
-        if (isActiveTask && isOverTask) {
-            setTasks((tasks) => {
-                const activeTaskIndex = tasks.findIndex((t) => t.id === activeId);
-                const overTaskIndex = tasks.findIndex((t) => t.id === overId);
+        setAllCards((tasks) => {
+            const activeTaskIndex = tasks.findIndex((t) => t.id === activeId);
+            const overTaskIndex = tasks.findIndex((t) => t.id === overId);
 
-                if (activeTaskIndex === -1 || overTaskIndex === -1) {
-                    return tasks; //prevents accessing undefined index
-                }
+            if (activeTaskIndex === -1) return tasks; //prevent errors
 
-                //create a new tasks array without mutating state directly
-                const updatedTasks = [...tasks]
+            const updatedTasks = [...tasks];
+            const movedTask = { ...updatedTasks[activeTaskIndex] };
 
-                if (tasks[activeTaskIndex].columnId !== tasks[overTaskIndex].columnId) {
-                    updatedTasks[activeTaskIndex] = {
-                        ...updatedTasks[activeTaskIndex],
-                        columnId: updatedTasks[overTaskIndex].columnId
+            if (isActiveTask && isOverTask) {
+                if (tasks[overTaskIndex]) {
+                    if (tasks[activeTaskIndex].listId !== tasks[overTaskIndex].listId) {
+                        movedTask.listId = tasks[overTaskIndex].listId
                     }
-                }
 
-                return arrayMove(updatedTasks, activeTaskIndex, overTaskIndex);
+                    updatedTasks.splice(activeTaskIndex, 1); //remove from old position
+                    updatedTasks.splice(overTaskIndex, 0, movedTask); //insert to new position
+                }
+            }
+
+            if (isActiveTask && isOverColumn) {
+                movedTask.listId = overId  //move to empty list
+
+                updatedTasks.splice(activeTaskIndex, 1);
+                updatedTasks.push(movedTask);
+            }
+
+            // const reorderedTasks = updatedTasks.map((task, index) => ({
+            //     ...task,
+            //     order: index,
+            // }));
+
+
+            const groupedByList = new Map<Id, Card[]>();
+            updatedTasks.forEach(task => {
+                if(!groupedByList.has(task.listId)){
+                    groupedByList.set(task.listId, [])
+                }
+                groupedByList.get(task.listId)!.push(task);
             });
-        }
 
-        const isOverColumn = over.data.current?.type === "Column";
+            const reorderedTasks = Array.from(groupedByList.values())
+            .flatMap(listcards => 
+                listcards.map((card, index) => ({
+                    ...card,
+                    order: index
+                }))
+            )
 
-        // In  dropping a task over another column
-        if (isActiveTask && isOverColumn) {
-            setTasks((tasks) => {
-                const activeTaskIndex = tasks.findIndex((t) => t.id === activeId);
+            submitUpdatedCardOrder(reorderedTasks, boardId);
 
-                if (activeTaskIndex == -1) {
-                    return tasks; //prevents accessing undefined index
-                }
-
-                const updatedTasks = [...tasks]
-
-                updatedTasks[activeTaskIndex] = {
-                    ...updatedTasks[activeTaskIndex],
-                    columnId: overId
-                }
-
-                return updatedTasks;
-
-                // tasks[activeTaskIndex].columnId = overId;
-
-                // return arrayMove(tasks, activeTaskIndex, activeTaskIndex);
-            });
-        }
+            return reorderedTasks
+        });
     }
 }
 
@@ -349,17 +356,17 @@ const submitListHandler = async (name: string, boardId: Id) => {
     }
 };
 
-const updateListHandler = async(orderedListIds: Id[], boardId: Id) =>{
+const submitUpdatedListOrder = async (orderedListIds: Id[], boardId: Id) => {
     try {
         // const orderedListIds = columns.map(col=> col.id); 
         console.log("orderedListIds:", orderedListIds)
-        const response = await axios.put(`/api/boards/${boardId}/lists`,{
+        const response = await axios.put(`/api/boards/${boardId}/lists`, {
             orderedListIds
         });
         console.log("Updated lists order:", response.data);
         return response.data
     }
-    catch(error){
+    catch (error) {
         console.error("Error updating lists order:", error);
         return null
     }
@@ -378,6 +385,19 @@ const submitCardHandler = async (content: string, boardId: Id, columnId: Id) => 
     } catch (error) {
         alert('Error while creating card');
         console.log(error)
+    }
+}
+
+const submitUpdatedCardOrder = async (updatedCards: updatedCardOrder[], boardId: Id) => {
+    try {
+        const response = await axios.put(`/api/boards/${boardId}/allcards`, {
+            cards: updatedCards
+        });
+        console.log("New order sending to backend:", updatedCards)
+        console.log("Updated card order:", response.data)
+    }
+    catch (error) {
+        console.error("failed to udpate card order:", error)
     }
 }
 

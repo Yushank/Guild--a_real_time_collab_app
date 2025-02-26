@@ -163,11 +163,13 @@ function KanbanBoard({ board }: KanbanBoardProps) {
     }
 
     function deleteColumn(id: Id) {
-        const filteredColumns = columns.filter(col => col.id != id);
-        setColumns(filteredColumns);
+        const filteredColumns = lists.filter(col => col.id != id);
+        setLists(filteredColumns);
 
-        const newTasks = tasks.filter((t) => t.listId !== id);
-        setTasks(newTasks)
+        const newTasks = allCards.filter((t) => t.listId !== id);
+        setAllCards(newTasks);
+
+        submitDeleteList(id, boardId)
     }
 
     function updateColumn(id: Id, title: string) {
@@ -190,13 +192,6 @@ function KanbanBoard({ board }: KanbanBoardProps) {
             console.log("Failed to create card: no id")
             return;
         }
-
-        // const newTask: Card = {
-        //     id: createdCard.card.id,
-        //     listId,
-        //     content
-        // }
-        // setTasks([...tasks, newTask]);
     }
 
     function deleteTask(id: Id) {
@@ -318,19 +313,19 @@ function KanbanBoard({ board }: KanbanBoardProps) {
 
             const groupedByList = new Map<Id, Card[]>();
             updatedTasks.forEach(task => {
-                if(!groupedByList.has(task.listId)){
+                if (!groupedByList.has(task.listId)) {
                     groupedByList.set(task.listId, [])
                 }
                 groupedByList.get(task.listId)!.push(task);
             });
 
             const reorderedTasks = Array.from(groupedByList.values())
-            .flatMap(listcards => 
-                listcards.map((card, index) => ({
-                    ...card,
-                    order: index
-                }))
-            )
+                .flatMap(listcards =>
+                    listcards.map((card, index) => ({
+                        ...card,
+                        order: index
+                    }))
+                )
 
             submitUpdatedCardOrder(reorderedTasks, boardId);
 
@@ -398,6 +393,21 @@ const submitUpdatedCardOrder = async (updatedCards: updatedCardOrder[], boardId:
     }
     catch (error) {
         console.error("failed to udpate card order:", error)
+    }
+}
+
+const submitDeleteList = async (listId: Id, boardId: Id) => {
+    try {
+        const response = await axios.delete(`/api/boards/${boardId}/lists/`, {
+            data: {
+                id: listId
+            }
+        })
+        console.log("ListId:", listId)
+        console.log("boardId:", boardId)
+        console.log("DELETE rqst is sent to backend route")
+    } catch (error) {
+        console.error("Failed to delete task:", error)
     }
 }
 

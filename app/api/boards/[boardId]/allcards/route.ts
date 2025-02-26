@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import client from '@/db'
 import { Id } from "@/app/types";
 import { Cards, Prisma } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 
 export async function PUT(req: NextRequest){
@@ -17,19 +19,6 @@ export async function PUT(req: NextRequest){
             }
             listGroups.get(card.listId)!.push(card);
         });
-
-
-        // const udpateQueries = cards.map((card)=>
-        //     client.cards.update({
-        //         where: {
-        //             id: card.id
-        //         },
-        //         data: {
-        //             order: card.order,
-        //             listId: card.listId
-        //         }
-        //     })
-        // );
 
         const updateQueries: Prisma.Prisma__CardsClient<Cards>[] = [];
 
@@ -59,6 +48,37 @@ export async function PUT(req: NextRequest){
         console.error("Error updating card order:", error)
         return NextResponse.json({
             msg: `Failed to udpate card order: ${error}`
+        }, {status: 500})
+    }
+}
+
+export async function DELETE(req: NextRequest){
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id ? parseInt(session.user.id) : undefined;
+
+    if(!userId){
+        return NextResponse.json({
+            msg: 'unauthorised'
+        })
+    }
+
+    try{
+        const {id} = await req.json();
+
+        await client.cards.delete({
+            where: {
+                id: id
+            }
+        });
+
+        console.log("card deleted");
+        return NextResponse.json({
+            msg: "Card deleted successfully"
+        })
+    } catch(error){
+        console.error("error deleting card:", error)
+        return NextResponse.json({
+            msg: 'Failed to delete card'
         }, {status: 500})
     }
 }

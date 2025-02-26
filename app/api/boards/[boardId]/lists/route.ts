@@ -112,22 +112,14 @@ export async function DELETE(req: NextRequest) {
     }
 
     try {
-        const {id: listId} = await req.json();
+        const { id: listId } = await req.json();
         console.log("List id recieved in delte list route:", listId)
 
-        await client.$transaction([
-            client.cards.deleteMany({
-                where: {
-                    listId: listId
-                }
-            }),
-
-            client.list.delete({
-                where: {
-                    id: listId
-                }
-            })
-        ])
+        await client.list.delete({
+            where: {
+                id: listId
+            }
+        })
 
         console.log("List deleted successfully")
 

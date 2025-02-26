@@ -195,9 +195,11 @@ function KanbanBoard({ board }: KanbanBoardProps) {
     }
 
     function deleteTask(id: Id) {
-        const newTasks = tasks.filter(task => task.id != id)
+        const newTasks = allCards.filter(task => task.id != id);
 
-        setTasks(newTasks);
+        setAllCards(newTasks);
+
+        submitDeleteCard(id, boardId);
     }
 
     function updateTask(id: Id, content: string) {
@@ -408,6 +410,21 @@ const submitDeleteList = async (listId: Id, boardId: Id) => {
         console.log("DELETE rqst is sent to backend route")
     } catch (error) {
         console.error("Failed to delete task:", error)
+    }
+}
+
+const submitDeleteCard = async (id: Id, boardId: Id) => {
+    try{
+        const response = await axios.delete(`/api/boards/${boardId}/allcards/`, {
+            data: {
+                id
+            }
+        })
+        console.log("boardId:", boardId);
+        console.log("card id:", id);
+        console.log("DELETE rqst for card is sent");
+    } catch(error){
+        console.error("Failed to delte card:", error)
     }
 }
 

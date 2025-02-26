@@ -37,7 +37,7 @@ model List {
   id Int @id @default(autoincrement())
   title String
   order Int @default(0)
-  board Board @relation(fields: [boardId], references: [id])
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId Int
   cards Cards[]
   createdAt DateTime @default(now())
@@ -50,7 +50,7 @@ model Cards {
   dueDate DateTime?
   order Int @default(0)
   priority Int?
-  list List @relation(fields: [listId], references: [id])
+  list List @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

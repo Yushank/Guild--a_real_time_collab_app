@@ -20,7 +20,7 @@ export const Navbar = () => {
     }
 
     return (
-        <div className="flex justify-between bg-black h-10 items-center">
+        <div className="fixed top-0 left-0 w-full flex justify-between bg-black h-10 items-center">
             <div>
                 <Link href={"/boards"}>
                     <h1 className="text-2xl font-bold text-white ml-2">Guild</h1>

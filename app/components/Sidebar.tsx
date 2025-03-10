@@ -4,7 +4,9 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { toggleCollapse } from '@/features/sidebar/sidebarSlice';
-import { StepForward, X } from 'lucide-react';
+import { Home, LayoutDashboard, LucideIcon, StepForward, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 export const Sidebar = () => {
   const isCollapsed = useSelector((state: RootState) => state.sidebar.isCollapsed);
@@ -23,7 +25,7 @@ export const Sidebar = () => {
               className='py-3 hover:bg-gray-100 rounded-full p-1 transition-colors'
               onClick={() => {
                 dispatch(toggleCollapse())
-              }}><StepForward className=' hover:text-gray-500 dark:text-white' /></button> : "LOGO"}
+              }}><StepForward className=' hover:text-gray-500 dark:text-white' /></button> : ""}
           </div>
 
           <button className='py-3 hover:bg-gray-100 rounded-full p-1 transition-colors'
@@ -34,7 +36,44 @@ export const Sidebar = () => {
           </button>
 
         </div>
+        <div>
+          <nav className='z-10 w-full'>
+            <SidebarLink icon={LayoutDashboard} label="Boards" href="/boards"/>
+          </nav>
+        </div>
       </div>
     </div>
+  )
+}
+
+
+interface sidebarLinkProps {
+  href: string,
+  icon: LucideIcon,
+  label: string,
+}
+
+const SidebarLink = ({ href, icon: Icon, label }: sidebarLinkProps) => {
+  const pathName = usePathname();
+  const isActive = pathName === href;
+
+  return (
+    <Link href={href} className='w-full'>
+      <div className={
+        `relative flex cursor-pointer items-center gap-3 transition-colors
+        hover:bg-gray-100 dark:bg-black dark:hover:bg-gray-700 ${isActive ? "bg-gray-100 text-white dark:bg-gray-600" : ""}
+        justify-start px-8 py-3`
+      }>
+
+        {isActive && (
+          <div className='absolute left-0 top-0 h-{100%} w-{5px} bg-blue-200'></div>
+        )}
+
+        <Icon className='h-6 w-6 text-gray-800 dark:text-gray-100'/>
+        <span className='font-medium text-gray-800 dark:text-gray-100'>
+          {label}
+        </span>
+      </div>
+    </Link>
   )
 }

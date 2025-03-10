@@ -16,7 +16,7 @@ export const Navbar = () => {
     }
 
     async function createBoard() {
-        router.push("/addBoard")
+        router.push("/boards")
     }
 
     return (

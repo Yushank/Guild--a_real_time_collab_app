@@ -4,13 +4,15 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { toggleCollapse } from '@/features/sidebar/sidebarSlice';
-import { Home, LayoutDashboard, LucideIcon, StepForward, X } from 'lucide-react';
+import { Home, LayoutDashboard, LucideIcon, Minus, StepForward, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 export const Sidebar = () => {
   const isCollapsed = useSelector((state: RootState) => state.sidebar.isCollapsed);
   const dispatch = useDispatch();
+
+  const selectedBoard = useSelector((state: RootState) => state.board.selectedBoard);
 
   const sidebarClassname = `fixed top-10 left-0 flex flex-col h-[100%] justify-between shadow-xl
     transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-white
@@ -36,10 +38,19 @@ export const Sidebar = () => {
           </button>
 
         </div>
+
+        
         <div>
           <nav className='z-10 w-full'>
-            <SidebarLink icon={LayoutDashboard} label="Boards" href="/boards"/>
+            <SidebarLink icon={LayoutDashboard} label="Boards" href="/boards" />
           </nav>
+        </div>
+
+        <div className='flex pl-10'>
+          <h1 className='text-white py-4'>
+            <Minus className='text-gray-100 dark:text-white inline-block mr-2' />
+            {selectedBoard ? selectedBoard.name : ""}
+          </h1>
         </div>
       </div>
     </div>
@@ -69,7 +80,7 @@ const SidebarLink = ({ href, icon: Icon, label }: sidebarLinkProps) => {
           <div className='absolute left-0 top-0 h-{100%} w-{5px} bg-blue-200'></div>
         )}
 
-        <Icon className='h-6 w-6 text-gray-800 dark:text-gray-100'/>
+        <Icon className='h-6 w-6 text-gray-800 dark:text-gray-100' />
         <span className='font-medium text-gray-800 dark:text-gray-100'>
           {label}
         </span>

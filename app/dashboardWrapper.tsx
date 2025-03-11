@@ -5,8 +5,9 @@ import { Navbar } from "./components/Navbar"
 import { Sidebar } from "./components/Sidebar"
 // import { Providers } from "./providers"
 import { Provider, useDispatch, useSelector } from "react-redux"
-import { RootState, store } from "./store"
+import { RootState, store, persistor } from "./store"
 import { Providers } from "./providers"
+import { PersistGate } from "redux-persist/integration/react"
 
 
 
@@ -33,7 +34,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 export const DashboardWrapper = ({ children }: { children: React.ReactNode }) => {
     return (
         <Provider store={store}>
-            <DashboardLayout>{children}</DashboardLayout>
+            <PersistGate loading={null} persistor={persistor}>
+                <DashboardLayout>{children}</DashboardLayout>
+            </PersistGate>
         </Provider>
     )
 }

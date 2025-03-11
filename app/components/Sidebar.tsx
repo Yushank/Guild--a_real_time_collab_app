@@ -39,19 +39,21 @@ export const Sidebar = () => {
 
         </div>
 
-        
-        <div>
-          <nav className='z-10 w-full'>
-            <SidebarLink icon={LayoutDashboard} label="Boards" href="/boards" />
-          </nav>
-        </div>
+{/* wrapped everything under isCollapsed condition so that when it is collapsed no icon is visible */}
+        {isCollapsed ? "" : <>
+          <div>
+            <nav className='z-10 w-full'>
+              <SidebarLink icon={LayoutDashboard} label="Boards" href="/boards" />
+            </nav>
+          </div>
 
-        <div className='flex pl-10'>
-          <h1 className='text-white py-4'>
-            <Minus className='text-gray-100 dark:text-white inline-block mr-2' />
-            {selectedBoard ? selectedBoard.name : ""}
-          </h1>
-        </div>
+          <div className='flex pl-10'>
+            <h1 className='text-white py-4'>
+              <Minus className='text-gray-100 dark:text-white inline-block mr-2' />
+              {selectedBoard ? selectedBoard.name : ""}
+            </h1>
+          </div>
+        </>}
       </div>
     </div>
   )

@@ -1,18 +1,28 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { toggleCollapse } from '@/features/sidebar/sidebarSlice';
 import { Home, LayoutDashboard, LucideIcon, Minus, StepForward, X } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { clearSelectedBoard } from '@/features/board/boardSlice';
 
 export const Sidebar = () => {
   const isCollapsed = useSelector((state: RootState) => state.sidebar.isCollapsed);
   const dispatch = useDispatch();
 
   const selectedBoard = useSelector((state: RootState) => state.board.selectedBoard);
+
+  const pathname = usePathname();
+
+  useEffect(()=>{
+    if(!pathname.startsWith('/board/')){
+      dispatch(clearSelectedBoard());
+    }
+  }, [pathname, dispatch])
+
 
   const sidebarClassname = `fixed top-10 left-0 flex flex-col h-[100%] justify-between shadow-xl
     transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-white
@@ -39,7 +49,7 @@ export const Sidebar = () => {
 
         </div>
 
-{/* wrapped everything under isCollapsed condition so that when it is collapsed no icon is visible */}
+        {/* wrapped everything under isCollapsed condition so that when it is collapsed no icon is visible */}
         {isCollapsed ? "" : <>
           <div>
             <nav className='z-10 w-full'>

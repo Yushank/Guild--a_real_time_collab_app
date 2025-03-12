@@ -2,7 +2,10 @@
 
 import KanbanBoard from "@/app/components/KanbanBoard";
 import { useBoard } from "@/app/hooks";
+import { setSelectedBoard } from "@/features/board/boardSlice";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { string } from "zod";
 
 
@@ -13,6 +16,14 @@ export default function Board(){
     const id = Array.isArray(params.boardId) ? params.boardId[0] : params.boardId ?? "";
     console.log("Extracted board id:", id)
     const {board, error, isLoading} = useBoard({id})
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        if(board){
+            dispatch(setSelectedBoard(board))
+        }
+    }, [board, dispatch])
+
 
     if(isLoading){
         return <div>Loading...</div>

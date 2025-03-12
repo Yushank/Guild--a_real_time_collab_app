@@ -3,6 +3,7 @@
 import KanbanBoard from "@/app/components/KanbanBoard";
 import { useBoard } from "@/app/hooks";
 import { setSelectedBoard } from "@/features/board/boardSlice";
+import { setSelectedBoardMembers } from "@/features/boardMember/boardMemberSlice";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -19,8 +20,10 @@ export default function Board(){
     const dispatch = useDispatch();
 
     useEffect(()=>{
+        console.log("board data before fetching:", board)
         if(board){
             dispatch(setSelectedBoard(board))
+            dispatch(setSelectedBoardMembers(board))
         }
     }, [board, dispatch])
 

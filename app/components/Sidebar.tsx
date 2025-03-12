@@ -4,8 +4,8 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { toggleCollapse } from '@/features/sidebar/sidebarSlice';
-import { Home, LayoutDashboard, LucideIcon, Minus, StepForward, X } from 'lucide-react';
-import { useParams, usePathname } from 'next/navigation';
+import { Home, LayoutDashboard, LucideIcon, Minus, StepForward, Users, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { clearSelectedBoard } from '@/features/board/boardSlice';
 
@@ -17,8 +17,8 @@ export const Sidebar = () => {
 
   const pathname = usePathname();
 
-  useEffect(()=>{
-    if(!pathname.startsWith('/board/')){
+  useEffect(() => {
+    if (!pathname.startsWith('/board/')) {
       dispatch(clearSelectedBoard());
     }
   }, [pathname, dispatch])
@@ -50,20 +50,29 @@ export const Sidebar = () => {
         </div>
 
         {/* wrapped everything under isCollapsed condition so that when it is collapsed no icon is visible */}
-        {isCollapsed ? "" : <>
-          <div>
-            <nav className='z-10 w-full'>
+        {!isCollapsed && (
+          <>
+            {/* Sidebar Links */}
+            <nav className="z-10 w-full">
               <SidebarLink icon={LayoutDashboard} label="Boards" href="/boards" />
             </nav>
-          </div>
 
-          <div className='flex pl-10'>
-            <h1 className='text-white py-4'>
-              <Minus className='text-gray-100 dark:text-white inline-block mr-2' />
-              {selectedBoard ? selectedBoard.name : ""}
-            </h1>
-          </div>
-        </>}
+            {/* Board Info (Only visible when board is selected) */}
+            {selectedBoard && (
+              <div className="mt-4">
+                {/* Board Name */}
+                <div className="flex items-center px-6 py-2">
+                  <Minus className="text-gray-100 dark:text-white mr-2" />
+                  <h1 className="text-white">{selectedBoard.name}</h1>
+                </div>
+
+                {/* Members Button */}
+                <SidebarLink icon={Users} label="Members" href="/members" />
+              </div>
+            )}
+          </>
+        )}
+
       </div>
     </div>
   )

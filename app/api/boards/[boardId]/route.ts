@@ -30,6 +30,7 @@ export async function GET(req: NextRequest){
                 }
             },
             include: {
+                members: true,
                 list: {
                     include: {cards: true}
                 }

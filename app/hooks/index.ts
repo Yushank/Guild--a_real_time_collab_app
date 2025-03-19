@@ -33,7 +33,7 @@ export const useBoards = () => {
 
         axios.get("/api/boards")
             .then(response => {
-                setBoards(response.data)
+                setBoards(response.data) // this update the whole state (with data gotten from DB), when hook is re-mounted.
                 setIsLoading(false)
             });
 
@@ -188,4 +188,51 @@ export const useAllCards = ({ boardId }: { boardId: Id }) => {
     }, [boardId]);
 
     return { allCards, setAllCards };
+}
+
+export const useBoardMembers = ({ boardId }: { boardId: number | undefined }) => {
+    const [board, setBoard] = useState<Board | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!boardId) {
+            setIsLoading(false);
+            setError("Invalid board ID");
+            return;
+        }
+
+        setIsLoading(true);
+
+        const fetchBoard = async () => {
+            try {
+                const response = await axios.get(`/api/boards/${boardId}`)
+                setBoard(response.data.board);
+                setError(null);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching board data:", error)
+            }
+        }
+        fetchBoard();
+
+        const handleNewBoard = (board: any) => {
+            if (!board) {
+                console.log("Received null board update for member:");
+                return; 
+            }
+            console.log("Received board update for ember:", board)
+            setBoard(board)
+        }
+        socket.on("boardMembers", handleNewBoard);
+
+        // setBoard(null);
+        setIsLoading(false)
+
+        return () => {
+            socket.off("boardMembers", handleNewBoard)
+        }
+    }, [boardId]);
+
+    return { board, isLoading, error }
 }

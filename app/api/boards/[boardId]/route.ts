@@ -53,3 +53,60 @@ export async function GET(req: NextRequest){
         })
     }
 }
+
+
+export async function POST(req: NextRequest){
+    const session = await getServerSession(authOptions);
+    const userId = session.user.id ? parseInt(session.user.id) : undefined;
+
+    if(!userId){
+        return NextResponse.json({
+            msg: "Unauthorized - No valid session user"
+        }, { status: 401 })
+    }
+
+    try{
+        const url = new URL(req.url);
+        const boardId = parseInt(url.pathname.split('/').pop() || '', 10);
+
+        const {email} = await req.json();
+
+        const user = await client.user.findUnique({
+            where: {
+                email: email
+            }
+        });
+
+        if(!user){
+            return NextResponse.json({
+                msg: 'user not found'
+            }, {status: 404})
+        }
+
+        const board = await client.board.update({
+            where: {
+                id: boardId
+            },
+            data: {
+                members: {
+                    connect: {
+                        id: user.id
+                    }
+                }
+            },
+            include: {
+                members: true  //include members to send complete data for members update via socket emit
+            }
+        });
+
+        io?.emit("boardMembers", board);
+        console.log("Emitted from post route for members:", board)
+
+        return NextResponse.json(board);
+    }
+    catch(error){
+        return NextResponse.json({
+            msg: `Error updating members: ${error}`
+        })
+    }
+}

@@ -19,6 +19,11 @@ export const Navbar = () => {
         router.push("/boards")
     }
 
+    async function signOutFunction() {
+        signOut();
+        router.push("/signin")
+    }
+
     return (
         <div className="fixed top-0 left-0 w-full flex justify-between bg-black h-10 items-center">
             <div>
@@ -34,7 +39,7 @@ export const Navbar = () => {
                     </>
                 ) : (
                     <>
-                        <Button onClick={() => signOut()} label="Signout" color="red" />
+                        <Button onClick={() => signOutFunction()} label="Signout" color="red" />
                         <Button onClick={createBoard} label="Create" color="green" />
                     </>
                 )}

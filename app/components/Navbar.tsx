@@ -20,7 +20,7 @@ export const Navbar = () => {
     }
 
     async function signOutFunction() {
-        signOut();
+         await signOut({redirect: false});
         router.push("/signin")
     }
 

@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { Navbar } from "./components/Navbar";
 import { DashboardWrapper } from "./dashboardWrapper";
+import { usePathname } from "next/navigation";
+import ClientWrapper from "./clientWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,12 +27,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <DashboardWrapper>{children}</DashboardWrapper>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

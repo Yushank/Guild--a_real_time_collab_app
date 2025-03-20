@@ -12,7 +12,7 @@ export default function(){
     const [password, setPassword] = useState("");
 
     return (
-        <div className="pt-16 px-4">
+        <div >
             <div>
                 SignIn
             </div>

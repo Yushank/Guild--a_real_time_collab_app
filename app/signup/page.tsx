@@ -1,11 +1,11 @@
-import { Signup } from "../components/Signup";
+import { Auth } from "../components/Auth";
 
 
 
 export default function(){
-    return(
-        <div>
-            <Signup />
-        </div>
-    )
+    return <div>
+            <div>
+                <Auth type="signup"/>
+            </div>
+    </div>
 }

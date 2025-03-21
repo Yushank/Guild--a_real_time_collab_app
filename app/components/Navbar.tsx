@@ -4,12 +4,19 @@ import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { toggleCollapse } from "@/features/sidebar/sidebarSlice";
+import { AlignJustify, X } from "lucide-react";
 
 
 
 export const Navbar = () => {
     const { data: session } = useSession();
     const router = useRouter();
+
+    const isCollapsed = useSelector((state: RootState) => state.sidebar.isCollapsed);
+    const dispatch = useDispatch();
 
     async function signupNavigation() {
         router.push("/signup")
@@ -20,18 +27,36 @@ export const Navbar = () => {
     }
 
     async function signOutFunction() {
-         await signOut({redirect: false});
+        await signOut({ redirect: false });
         router.push("/signin")
     }
 
     return (
-        <div className="fixed top-0 left-0 w-full flex justify-between bg-black h-10 items-center">
-            <div>
+        <div className="fixed top-0 left-0 w-full flex justify-between bg-black h-12 items-center px-4">
+            <div className="flex items-center space-x-4">
+                {/* Toggle sidebar button */}
+                <div className='text-xl font-bold text-gray-800 dark: text-white'>
+                    {isCollapsed ? (
+                        <button
+                            className='p-2 hover:bg-gray-100 rounded-full transition-colors'
+                            onClick={() => {
+                                dispatch(toggleCollapse())
+                            }}><AlignJustify className='h-6 w-6 hover:text-gray-400 dark:text-white' />
+                        </button>) : (
+                        <button className='p-2 hover:bg-gray-700 rounded-full transition-colors'
+                            onClick={() => {
+                                dispatch(toggleCollapse())
+                            }}>
+                            <X className='h-6 w-6 hover:text-gray-400 dark:text-white' />
+                        </button>
+                    )}
+                </div>
+                {/* APP NAME */}
                 <Link href={"/boards"}>
-                    <h1 className="text-2xl font-bold text-white ml-2">Guild</h1>
+                    <h1 className="text-2xl font-bold text-white">Guild</h1>
                 </Link>
             </div>
-            <div className="flex space-x-5">
+            <div className="flex items-center space-x-4">
                 {!session ? (
                     <>
                         <Button onClick={() => signIn()} label="Signin" color="blue" />

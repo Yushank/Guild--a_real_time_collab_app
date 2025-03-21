@@ -16,7 +16,7 @@ export default function Boards() {
     }
 
     return (
-        <div className="p-4 mt-8">
+        <div className="p-4 mt-9">
             <div className="flex flex-wrap gap-4">
                 {boards.map(board => <BoardsCard
                     key={board.id}

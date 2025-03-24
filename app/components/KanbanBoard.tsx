@@ -47,9 +47,9 @@ function KanbanBoard({ board }: KanbanBoardProps) {
     console.log(lists);
     return (
         <div>
-            <div>
+            {/* <div>
                 <h1 className="font-bold text-black">{board.name}</h1>
-            </div>
+            </div> */}
             <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[40px]">
                 <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} sensors={sensors}>
                     <div className="m-auto flex gap-4">
@@ -74,7 +74,7 @@ function KanbanBoard({ board }: KanbanBoardProps) {
                         {/* initial condition false button visible, when button clicked, condition true, button hide, input box visible. Create button clicked, condition become flase again add list button visible, input hidden */}
                         {!isAddingColumn ? (
                             <button
-                                className="h-[60px] w-[50px] min-w-[350px] cursor-pointer rounded-lg bg-black border-2 border-black p-2 ring-rose-500 hover:ring-2 text-white flex gap-2"
+                                className="h-[60px] w-[50px] min-w-[350px] cursor-pointer rounded-lg bg-containerHeader border-blue-900 hover:ring-blue-400 dark:bg-black border-2 dark:border-black p-2 dark:hover:ring-rose-500 hover:ring-2 text-white flex gap-2"
                                 onClick={() => setIsAddingColumn(true)}
                             >
                                 Add another list
@@ -83,7 +83,7 @@ function KanbanBoard({ board }: KanbanBoardProps) {
                             <div className="flex flex-col gap-4">
                                 {/* Input Box */}
                                 <input
-                                    className="h-[60px] w-[50px] min-w-[350px] text-white bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                                    className="h-[60px] w-[50px] min-w-[350px] text-black bg-gray-300 dark:text-white dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-rose-500"
                                     type="text"
                                     placeholder="Enter column title"
                                     value={newColumnTitle}
@@ -92,7 +92,7 @@ function KanbanBoard({ board }: KanbanBoardProps) {
                                 {/* Button Group */}
                                 <div className="flex gap-4">
                                     <button
-                                        className="flex-1 h-12 cursor-pointer rounded-lg bg-black border-2 border-black p-2 hover:ring-2 hover:ring-rose-500 text-white flex items-center justify-center gap-2"
+                                        className="flex-1 h-12 cursor-pointer rounded-lg bg-blue-500 border-blue-400 dark:bg-black border-2 dark:border-black p-2 hover:ring-2 hover: ring-blue-200 dark:hover:ring-rose-500 text-white flex items-center justify-center gap-2"
                                         onClick={() => {
                                             createNewColumn();
                                         }}
@@ -100,7 +100,7 @@ function KanbanBoard({ board }: KanbanBoardProps) {
                                         <PlusIcon /> Add List
                                     </button>
                                     <button
-                                        className="flex-1 h-12 cursor-pointer rounded-lg bg-gray-600 border-2 border-gray-600 p-2 text-white hover:bg-gray-700"
+                                        className="flex-1 h-12 cursor-pointer rounded-lg bg-gray-800 border-2 border-gray-600 p-2 text-white hover:bg-gray-700"
                                         onClick={() => cancelCreateColumn()}
                                     >
                                         Cancel

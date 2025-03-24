@@ -25,13 +25,13 @@ export const Sidebar = () => {
 
 
   const sidebarClassname = `fixed top-10 left-0 flex flex-col h-[100%] justify-between shadow-xl
-    transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-white
+    transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-navbar
     ${isCollapsed ? "w-0" : "w-64"}`;
 
   return (
     <div className={sidebarClassname}>
       <div className='flex h-[100%] w-full flex-col justify-start'>
-        <div className='z-50 flex min-h-[56px] w-64 items-center justify-between bg-white px-6 pt-3 dark:bg-black'>
+        <div className='z-50 flex min-h-[56px] w-64 items-center justify-between bg-navbar px-6 pt-3 dark:bg-black'>
           
         </div>
 
@@ -48,8 +48,8 @@ export const Sidebar = () => {
               <div className="mt-4">
                 {/* Board Name */}
                 <div className="flex items-center px-6 py-2">
-                  <Minus className="text-gray-100 dark:text-white mr-2" />
-                  <h1 className="text-white">{selectedBoard.name}</h1>
+                  <Minus className="text-gray-900 dark:text-white mr-2" />
+                  <h1 className="text-gray-900 dark:text-gray-100">{selectedBoard.name}</h1>
                 </div>
 
                 {/* Members Button */}

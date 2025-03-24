@@ -7,7 +7,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { toggleCollapse } from "@/features/sidebar/sidebarSlice";
-import { AlignJustify, X } from "lucide-react";
+import { AlignJustify, Moon, Sun, X } from "lucide-react";
+import { toggleDarkMode } from "@/features/darkMode/darkModeSlice";
 
 
 
@@ -16,6 +17,7 @@ export const Navbar = () => {
     const router = useRouter();
 
     const isCollapsed = useSelector((state: RootState) => state.sidebar.isCollapsed);
+    const darkMode = useSelector((state: RootState) => state.darkMode.isDarkMode);
     const dispatch = useDispatch();
 
     async function signupNavigation() {
@@ -32,7 +34,7 @@ export const Navbar = () => {
     }
 
     return (
-        <div className="fixed top-0 left-0 w-full flex justify-between bg-black h-12 items-center px-4">
+        <div className="fixed top-0 left-0 w-full flex justify-between bg-navbar dark:bg-black h-12 items-center px-4 shadow-md">
             <div className="flex items-center space-x-4">
                 {/* Toggle sidebar button */}
                 <div className='text-xl font-bold text-gray-800 dark: text-white'>
@@ -41,22 +43,28 @@ export const Navbar = () => {
                             className='p-2 hover:bg-gray-100 rounded-full transition-colors'
                             onClick={() => {
                                 dispatch(toggleCollapse())
-                            }}><AlignJustify className='h-6 w-6 hover:text-gray-400 dark:text-white' />
+                            }}><AlignJustify className='h-6 w-6 hover:text-gray-400 text-gray-900 dark:text-white' />
                         </button>) : (
                         <button className='p-2 hover:bg-gray-700 rounded-full transition-colors'
                             onClick={() => {
                                 dispatch(toggleCollapse())
                             }}>
-                            <X className='h-6 w-6 hover:text-gray-400 dark:text-white' />
+                            <X className='h-6 w-6 hover:text-gray-400 text-gray-900 dark:text-white' />
                         </button>
                     )}
                 </div>
                 {/* APP NAME */}
                 <Link href={"/boards"}>
-                    <h1 className="text-2xl font-bold text-white">Guild</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Guild</h1>
                 </Link>
             </div>
             <div className="flex items-center space-x-4">
+                <button onClick={() => dispatch(toggleDarkMode())}
+                    className="p-2 bg-gray dark:bg-gray-700 rounded"
+                    >
+                        {darkMode ? <Sun className="text-white"/> :  <Moon/>}                                    
+                </button>
+
                 {!session ? (
                     <>
                         <Button onClick={() => signIn()} label="Signin" color="blue" />

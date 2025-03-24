@@ -31,7 +31,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
 
     if(isDragging){
         return <div ref={setNodeRef} style={style}
-        className='bg-gray-900 opacity-60 border-gray-700 p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-xl cursor-grab relative'></div>
+        className='bg-card dark:bg-gray-900 opacity-60 border-gray-700 p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-xl cursor-grab relative'></div>
     }
 
     return (
@@ -40,7 +40,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
             style={style}
             {...attributes}
             {...listeners}
-            className='bg-gray-900 p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-rose-500 cursor-grab relative'
+            className='bg-card dark:bg-gray-900 p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-rose-500 cursor-grab relative'
 
             onMouseEnter={() => {
                 setMouseIsOver(true)
@@ -55,7 +55,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         >{!editMode ? (
             (task.content)
         ) : (<input
-            className="bg-black focus:border-rose-500 border rounded outline-none px-2 w-full"
+            className="bg-white text-black focus:border-rose-500 border rounded outline-none px-2 w-full"
             type='text'
             value={task.content}
             onChange={(e) => updateTask(task.id, e.target.value)}

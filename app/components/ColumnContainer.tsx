@@ -50,7 +50,7 @@ function ColumnContainer(props: Props) {
 
     if (isDragging) {
         return <div ref={setNodeRef} style={style}
-            className="bg-gray-800 opacity-60 border-gray-700 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col"
+            className="bg-container dark:bg-gray-800 opacity-60 border-gray-700 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col"
         ></div>
     }
 
@@ -58,7 +58,7 @@ function ColumnContainer(props: Props) {
         <div
             ref={setNodeRef}
             style={style}
-            className="bg-gray-800 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col">
+            className="bg-container dark:bg-gray-800 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col">
 
 
             {/* COLUMN TITLE */}
@@ -66,11 +66,11 @@ function ColumnContainer(props: Props) {
                 {...attributes}
                 {...listeners}
                 onClick={() => setEditMode(true)}
-                className="bg-black text-md text-white h-[60px] cursor-grab rounded-md rounded-b-none p-3 font-bold border-black border-4 flex items-center justify-between">
+                className="bg-containerHeader dark:bg-black text-md text-white h-[60px] cursor-grab rounded-md rounded-b-none p-3 font-bold border-blue-900 dark:border-black border-4 flex items-center justify-between">
                 <div className="flex">
                     {!editMode ? (column.title) :
                         (<input
-                            className="bg-black focus:border-rose-500 border rounded outline-none px-2 w-full"
+                            className="bg-white text-black focus:border-blue-900 dark:focus:border-rose-500 border rounded outline-none px-2 w-full"
                             value={column.title}
                             onChange={(e) => updateColumn(column.id, e.target.value)}
                             autoFocus
@@ -88,12 +88,12 @@ function ColumnContainer(props: Props) {
                     onClick={() => {
                         deleteColumn(column.id)
                     }}
-                    className="stroke-gray-500 hover:stroke-white hover:bg-gray-800 rounded px-1 py-2"
+                    className="stroke-gray-100 dark:stroke-gray-500 hover:stroke-white hover:bg-gray-800 rounded px-1 py-2"
                 ><BinIcon /></button>
             </div>
 
             {/* COLUMN TASK CONTAINER */}
-            <div className="flex  flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto text-white">
+            <div className="flex  flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto text-gray-900 font-semibold dark:text-white">
                 <div>
                     <div>
                         <SortableContext items={tasksId}>
@@ -105,7 +105,7 @@ function ColumnContainer(props: Props) {
                     {!isAddingTask ? (
                         <div className="pt-2">
                             <button onClick={() => setIsAddingTask(true)}
-                                className="flex gap-2 pt-2 bg-gray-800 hover:ring-2 hover:ring-rose-500 rounded"><PlusIcon />Add a card</button>
+                                className="flex gap-2 pt-2 bg-card dark:bg-gray-800 hover:ring-2 hover:ring-gray-800 dark:hover:ring-rose-500 rounded"><PlusIcon />Add a card</button>
                         </div>
                     ) : (
                         <div>

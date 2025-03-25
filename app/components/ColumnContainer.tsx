@@ -105,18 +105,29 @@ function ColumnContainer(props: Props) {
                     {!isAddingTask ? (
                         <div className="pt-2">
                             <button onClick={() => setIsAddingTask(true)}
-                                className="flex gap-2 pt-2 bg-card dark:bg-gray-800 hover:ring-2 hover:ring-gray-800 dark:hover:ring-rose-500 rounded"><PlusIcon />Add a card</button>
+                                className="flex gap-2 bg-card dark:bg-gray-700 dark:text-gray-100 hover:ring-2 hover:ring-gray-800 dark:hover:ring-rose-500 rounded p-2"><PlusIcon />Add a card</button>
                         </div>
                     ) : (
                         <div>
                             <input
-                                className="bg-gray-700"
+                                className="w-full p-2 border rounded-md text-black dark:text-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 type="text"
                                 placeholder="Add card value"
                                 value={newTask}
                                 onChange={(e) => setNewTask(e.target.value)} />
-                            <div className="bg-blue-500">
-                                <button onClick={() => createNewTask()}>Add Card</button>
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={() => createNewTask()}
+                                    className="flex-1 h-12 cursor-pointer rounded-lg bg-rose-300 dark:bg-blue-500 border-2 border-rose-400 dark:border-blue-600 p-2 text-black dark:text-white hover:bg-rose-200 dark:hover:bg-blue-400">
+                                    Add Card
+                                </button>
+
+                                <button
+                                    className="flex-1 h-12 cursor-pointer rounded-lg bg-gray-800 dark:bg-gray-700 border-2 border-gray-600 p-2 text-white hover:bg-gray-700 dark:hover:bg-gray-600"
+                                    onClick={() => cancelCreateTask()}
+                                >
+                                    Cancel
+                                </button>
                             </div>
                         </div>
                     )}
@@ -130,6 +141,11 @@ function ColumnContainer(props: Props) {
         createTask(column.id, newTask);
         setIsAddingTask(false);
         setNewTask("")
+    }
+
+    function cancelCreateTask() {
+        setIsAddingTask(false);
+        setNewTask("");
     }
 }
 

@@ -46,7 +46,7 @@ export const DashboardWrapper = ({ children }: { children: React.ReactNode }) =>
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
                 <DashboardLayout>
-                    <div className="bg-gray-100 dark:bg-gray-600">{children}</div>
+                    <div className="min-h-screen bg-gray-100 dark:bg-gray-600">{children}</div>
                 </DashboardLayout>
             </PersistGate>
         </Provider>

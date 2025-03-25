@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { clearSelectedBoardMembers } from '@/features/boardMember/boardMemberSlice'
 import axios from 'axios'
 import { useBoardMembers } from '../hooks'
+import { Dot } from 'lucide-react'
 
 export const Members = () => {
     const selectedBoardMembers = useSelector((state: RootState) => state.boardMembers.selectedBoardMembers);
@@ -53,30 +54,34 @@ export const Members = () => {
     return (
         <div>
             <div>
-                <div>Add members in board</div>
+                <div>
+                    <h1 className='text-black dark:text-white font-bold py-2'>Add members in board</h1>
+                </div>
                 <InputBox
-                    label='Member Email'
+                    label='Member Email: '
                     type='text'
                     placeholder='peter@gmail.com'
-                    value = {members}
+                    value={members}
                     onChange={(e) => setMembers(e.target.value)}
                 ></InputBox>
-                <button onClick={sendRequest}>Add</button>
+                <button onClick={sendRequest} className='font-semibold bg-blue-400 text-gray-100 dark:text-gray-900 rounded-lg py-2 px-6 hover:bg-blue-500 dark:hover:bg-gray-200'>Add</button>
             </div>
 
 
             <div className="pt-16 px-6 z-10">
+                <h1 className='font-bold text-black dark:text-white p-2'>Members</h1>
                 {board?.members?.length ? (
                     board.members.map((member) => (
                         <div key={member.id} className="mb-2 flex gap-2">
-                            <h1 className="text-black font-semibold">
+                            <Dot className='text-black dark:text-white'/>
+                            <h1 className="text-gray-900 dark:text-gray-100 font-semibold">
                                 {member.firstName} {member.lastName}
                             </h1>
-                            <p className='text-black'>({member.email})</p>
+                            <p className='text-gray-900 dark:text-gray-100'>({member.email})</p>
                         </div>
                     ))
                 ) : (
-                    <p className="text-gray-500 dark:text-gray-400">No members found.</p>
+                    <p className="text-gray-900 dark:text-gray-200">No members found.</p>
                 )}
             </div>
         </div>
@@ -95,8 +100,8 @@ interface InputType {
 function InputBox({ label, type, placeholder, value, onChange }: InputType) {
     return (
         <div>
-            <label>{label}</label>
-            <input type={type} placeholder={placeholder} value={value} onChange={onChange} />
+            <label className='text-black dark:text-white font-semibold'>{label}</label>
+            <input type={type} placeholder={placeholder} value={value} onChange={onChange} className='bg-gray-500 dark:bg-gray-100 text-white dark:text-black p-2 rounded-lg' />
         </div>
     )
 }

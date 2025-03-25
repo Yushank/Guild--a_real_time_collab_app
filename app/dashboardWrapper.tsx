@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react"
 import { Navbar } from "./components/Navbar"
 import { Sidebar } from "./components/Sidebar"
-// import { Providers } from "./providers"
-import { Provider, useDispatch, useSelector } from "react-redux"
-import { persistor, RootState, store } from "./store"
+import { useSelector } from "react-redux"
+import { RootState } from "./store"
 import { Providers } from "./providers"
-import { PersistGate } from "redux-persist/integration/react"
 
 
 
@@ -43,12 +41,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
 export const DashboardWrapper = ({ children }: { children: React.ReactNode }) => {
     return (
-        <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
                 <DashboardLayout>
                     <div className="min-h-screen bg-gray-100 dark:bg-gray-600">{children}</div>
                 </DashboardLayout>
-            </PersistGate>
-        </Provider>
     )
 }

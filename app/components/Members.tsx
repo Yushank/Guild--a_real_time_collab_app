@@ -68,7 +68,7 @@ export const Members = () => {
             </div>
 
 
-            <div className="pt-16 px-6 z-10">
+            <div className="mt-16 px-6 z-10 w-1/2 rounded-lg border-2 border-gray-900">
                 <h1 className='font-bold text-black dark:text-white p-2'>Members</h1>
                 {board?.members?.length ? (
                     board.members.map((member) => (

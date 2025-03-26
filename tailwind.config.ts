@@ -13,10 +13,10 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         bgLight: "#FFDDE9",
-        navbar: "#FFF2DB",
-        container: "#00879E",
-        containerHeader: "#003092",
-        card: "#FFAB5B"
+        navbar: "#C5D3E8",
+        container: "#F8FAFC",
+        containerHeader: "#BCCCDC",
+        card: "#D9EAFD"
       },
     },
   },

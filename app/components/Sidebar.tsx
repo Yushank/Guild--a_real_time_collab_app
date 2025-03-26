@@ -79,7 +79,7 @@ const SidebarLink = ({ href, icon: Icon, label }: sidebarLinkProps) => {
     <Link href={href} className='w-full'>
       <div className={
         `relative flex cursor-pointer items-center gap-3 transition-colors
-        hover:bg-rose-200 dark:bg-black dark:hover:bg-gray-700 ${isActive ? "bg-rose-300 text-white dark:bg-gray-600" : ""}
+        hover:bg-blue-200 dark:bg-black dark:hover:bg-gray-700 ${isActive ? "bg-blue-300 text-white dark:bg-gray-600" : ""}
         justify-start px-8 py-3`
       }>
 

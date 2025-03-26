@@ -74,7 +74,7 @@ function KanbanBoard({ board }: KanbanBoardProps) {
                         {/* initial condition false button visible, when button clicked, condition true, button hide, input box visible. Create button clicked, condition become flase again add list button visible, input hidden */}
                         {!isAddingColumn ? (
                             <button
-                                className="h-[60px] w-[50px] min-w-[350px] cursor-pointer rounded-lg bg-containerHeader border-blue-900 hover:ring-blue-400 dark:bg-black border-2 dark:border-black p-2 dark:hover:ring-rose-500 hover:ring-2 text-white flex gap-2"
+                                className="h-[60px] w-[50px] min-w-[350px] cursor-pointer rounded-lg bg-containerHeader border-blue-900 hover:ring-blue-400 dark:bg-black border-2 dark:border-black p-2 dark:hover:ring-rose-500 hover:ring-2 text-black dark:text-white flex gap-2"
                                 onClick={() => setIsAddingColumn(true)}
                             >
                                 Add another list

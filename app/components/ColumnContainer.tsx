@@ -50,7 +50,7 @@ function ColumnContainer(props: Props) {
 
     if (isDragging) {
         return <div ref={setNodeRef} style={style}
-            className="bg-container dark:bg-gray-800 opacity-60 border-gray-700 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col"
+            className="bg-container dark:bg-gray-800 opacity-60 border-gray-700 border-2 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col"
         ></div>
     }
 
@@ -58,7 +58,7 @@ function ColumnContainer(props: Props) {
         <div
             ref={setNodeRef}
             style={style}
-            className="bg-container dark:bg-gray-800 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col">
+            className="bg-container dark:bg-gray-800 border-gray-700 border-2 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col">
 
 
             {/* COLUMN TITLE */}
@@ -66,7 +66,7 @@ function ColumnContainer(props: Props) {
                 {...attributes}
                 {...listeners}
                 onClick={() => setEditMode(true)}
-                className="bg-containerHeader dark:bg-black text-md text-white h-[60px] cursor-grab rounded-md rounded-b-none p-3 font-bold border-blue-900 dark:border-black border-4 flex items-center justify-between">
+                className="bg-containerHeader dark:bg-black text-md text-black dark:text-white h-[60px] cursor-grab rounded-md rounded-b-none p-3 font-bold border-blue-900 dark:border-black border-b-2 flex items-center justify-between">
                 <div className="flex">
                     {!editMode ? (column.title) :
                         (<input
@@ -105,12 +105,12 @@ function ColumnContainer(props: Props) {
                     {!isAddingTask ? (
                         <div className="pt-2">
                             <button onClick={() => setIsAddingTask(true)}
-                                className="flex gap-2 bg-card dark:bg-gray-700 dark:text-gray-100 hover:ring-2 hover:ring-gray-800 dark:hover:ring-rose-500 rounded p-2"><PlusIcon />Add a card</button>
+                                className="flex gap-2 border-2 border-gray-700 bg-card dark:bg-gray-700 dark:text-gray-100 hover:ring-2 hover:ring-gray-800 dark:hover:ring-rose-500 rounded p-2"><PlusIcon />Add a card</button>
                         </div>
                     ) : (
                         <div>
                             <input
-                                className="w-full p-2 border rounded-md text-black dark:text-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full p-2 mb-2 border-2 border-blue-300 rounded-md text-black dark:text-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 type="text"
                                 placeholder="Add card value"
                                 value={newTask}

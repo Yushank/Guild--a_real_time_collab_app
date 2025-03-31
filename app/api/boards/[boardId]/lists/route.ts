@@ -3,7 +3,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import client from '@/db'
 import { io } from "@/lib/server";
-import { useRouter } from "next/router";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 

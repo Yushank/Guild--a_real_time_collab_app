@@ -7,8 +7,6 @@ import { setSelectedBoardMembers } from "@/features/boardMember/boardMemberSlice
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { string } from "zod";
-
 
 
 export default function Board(){

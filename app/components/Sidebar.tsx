@@ -3,8 +3,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
-import { toggleCollapse } from '@/features/sidebar/sidebarSlice';
-import { Home, LayoutDashboard, LucideIcon, Minus, StepForward, Users, X } from 'lucide-react';
+import { LayoutDashboard, LucideIcon, Minus, Users } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { clearSelectedBoard } from '@/features/board/boardSlice';

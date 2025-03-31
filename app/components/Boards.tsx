@@ -1,7 +1,4 @@
-import { setSelectedBoard } from "@/features/board/boardSlice";
 import Link from "next/link"
-import { useDispatch } from "react-redux"
-
 
 interface boardsProp {
     id: number,

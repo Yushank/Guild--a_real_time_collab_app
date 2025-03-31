@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import { Card, Id, Task } from '../types'
+import { Card, Id } from '../types'
 import BinIcon from '../icons/BinIcon'
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';

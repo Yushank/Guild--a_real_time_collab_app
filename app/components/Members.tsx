@@ -1,10 +1,8 @@
 "use client"
 
-import React, { ChangeEvent, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { ChangeEvent, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { RootState } from '../store'
-import { usePathname } from 'next/navigation'
-import { clearSelectedBoardMembers } from '@/features/boardMember/boardMemberSlice'
 import axios from 'axios'
 import { useBoardMembers } from '../hooks'
 import { Dot } from 'lucide-react'

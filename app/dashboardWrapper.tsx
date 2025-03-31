@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Navbar } from "./components/Navbar"
 import { Sidebar } from "./components/Sidebar"
 import { useSelector } from "react-redux"

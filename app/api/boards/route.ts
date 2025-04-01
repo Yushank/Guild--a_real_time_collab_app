@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
             data: {
                 name: name,
                 members: {
-                    connect: [...members.map((memberId: Number) => ({ id: memberId })), { id: userId }]
+                    connect: [...members.map((memberId: number) => ({ id: memberId })), { id: userId }]
                 }
             },
             include: {

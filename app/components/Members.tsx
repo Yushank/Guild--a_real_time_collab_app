@@ -12,7 +12,7 @@ export const Members = () => {
     console.log("Selected board members:", selectedBoardMembers);
     const boardId: number | undefined = selectedBoardMembers?.id;
     console.log("board id in members component:", boardId)
-    const { board, error, isLoading } = useBoardMembers({ boardId })
+    const { board, isLoading } = useBoardMembers({ boardId })
 
     const [members, setMembers] = useState("");
 
@@ -47,6 +47,10 @@ export const Members = () => {
                 console.log("Unexpected error:", error);
             }
         }
+    }
+
+    if (isLoading) {
+        return <div>Loading...</div>
     }
 
     return (

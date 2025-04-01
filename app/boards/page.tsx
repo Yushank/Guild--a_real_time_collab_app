@@ -9,7 +9,6 @@ import CreateBoard from "../components/CreateBoard";
 
 export default function Boards() {
     const { boards, isLoading } = useBoards();
-    const router = useRouter();
 
     if (isLoading) {
         return <div>Loading...</div>

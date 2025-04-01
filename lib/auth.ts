@@ -2,6 +2,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import client from "@/db"
 import { JWT } from "next-auth/jwt";
 import bcrypt from 'bcrypt'
+import { User } from "@/app/types";
 
 
 export const authOptions = {
@@ -12,7 +13,8 @@ export const authOptions = {
                 username: { label: "Username", type: "text", placeholder: "peter@gmail.com" },
                 password: { label: "Password", type: "password", placeholder: "password" }
             },
-            async authorize(credentials: any) {
+            async authorize(credentials): Promise<{ id: string } | null> {
+                if(!credentials) return null
                 
                 const user = await client.user.findFirst({
                     where: {
@@ -39,7 +41,7 @@ export const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
 
     callbacks: {
-        jwt: async ({ token, user }: { token: JWT; user: any }) => {
+        jwt: async ({ token, user }: { token: JWT; user: User }) => {
             if (user) {
                 token.uid = user.id;
             }

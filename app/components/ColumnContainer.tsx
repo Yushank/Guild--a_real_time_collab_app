@@ -2,12 +2,12 @@
 
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import BinIcon from "../icons/BinIcon";
-import { Card, Column, Id, Task } from "../types"
+import { Card, Column, Id } from "../types"
 import { CSS } from "@dnd-kit/utilities"
 import { useMemo, useState } from "react";
 import PlusIcon from "../icons/PlusIcon";
 import TaskCard from "./TaskCard";
-import { useCard } from "../hooks";
+// import { useCard } from "../hooks";
 
 
 interface Props {
@@ -28,7 +28,7 @@ function ColumnContainer(props: Props) {
     const [isAddingTask, setIsAddingTask] = useState(false);
     const [newTask, setNewTask] = useState("");
     const listId = column.id;
-    const { cards } = useCard(boardId, listId)
+    // const { cards } = useCard(boardId, listId)
 
     const tasksId = useMemo(() => {
         return tasks.map((task) => task.id)

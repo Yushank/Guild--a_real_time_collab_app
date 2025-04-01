@@ -32,6 +32,7 @@ export type User = {
     email: string
 }
 
+
 export type Card = {
     id: Id;
     listId: Id;

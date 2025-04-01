@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import client from '@/db'
-import { Id } from "@/app/types";
 import { Cards, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";

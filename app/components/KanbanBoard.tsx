@@ -13,11 +13,8 @@ import { useParams } from "next/navigation";
 import { useAllCards, useList } from "../hooks";
 
 
-interface KanbanBoardProps {
-    board: Board
-}
 
-function KanbanBoard({ board }: KanbanBoardProps) {
+function KanbanBoard() {
     const [columns, setColumns] = useState<Column[]>([]);
     const params = useParams();
     // console.log("Params from kanbanboard:", params)
@@ -407,7 +404,7 @@ const submitDeleteList = async (listId: Id, boardId: Id) => {
         })
         console.log("ListId:", listId)
         console.log("boardId:", boardId)
-        console.log("DELETE rqst is sent to backend route")
+        console.log("DELETE rqst is sent to backend route:", response)
     } catch (error) {
         console.error("Failed to delete task:", error)
     }
@@ -422,7 +419,7 @@ const submitDeleteCard = async (id: Id, boardId: Id) => {
         })
         console.log("boardId:", boardId);
         console.log("card id:", id);
-        console.log("DELETE rqst for card is sent");
+        console.log("DELETE rqst for card is sent:", response);
     } catch(error){
         console.error("Failed to delte card:", error)
     }

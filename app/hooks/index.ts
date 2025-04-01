@@ -1,7 +1,7 @@
 import socket from "@/utils/socket";
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { Board, Card, Id, Task } from "../types";
+import { Board, Card, Id } from "../types";
 
 
 interface cards {
@@ -110,7 +110,7 @@ export const useList = ({ boardId }: { boardId: Id }) => {
         }
         fetchLists();
 
-        const handleNewList = (list: any) => {
+        const handleNewList = (list: list) => {
             // console.log("New list received via socket:", list);
             setLists((prev) => [...prev, list])
         }
@@ -139,7 +139,7 @@ export const useCard = (boardId: Id, listId: Id) => {
         }
         fetchCards();
 
-        const handleNewCard = (card: any) => {
+        const handleNewCard = (card: Card) => {
             // console.log("New card received via socket:", card);
             if (card.listId === listId) {  // this to check and add only those cards whose listId match the hook calling column container id
                 setCards((prev) => [...prev, card])
@@ -150,7 +150,7 @@ export const useCard = (boardId: Id, listId: Id) => {
         return () => {
             socket.off("card", handleNewCard)
         }
-    }, [listId]);
+    }, [listId, boardId]);
 
     return { cards };
 }
@@ -174,7 +174,7 @@ export const useAllCards = ({ boardId }: { boardId: Id }) => {
 
         fetchAllCards();
 
-        const handleNewCard = (card: any) => {
+        const handleNewCard = (card: Card) => {
             // console.log("New card received via socket:", card);
             setAllCards((prev) => [...prev, card])
 
@@ -216,7 +216,7 @@ export const useBoardMembers = ({ boardId }: { boardId: number | undefined }) =>
         }
         fetchBoard();
 
-        const handleNewBoard = (board: any) => {
+        const handleNewBoard = (board: Board) => {
             if (!board) {
                 console.log("Received null board update for member:");
                 return; 

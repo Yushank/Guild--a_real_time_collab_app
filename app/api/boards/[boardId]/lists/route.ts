@@ -71,8 +71,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ boar
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ boardId: string }> }) {
     try {
         const { orderedListIds } = await req.json();
-        console.log("ordered list id received:", orderedListIds)
-        const boardId = parseInt((await params).boardId);
+        console.log("ordered list id received:", orderedListIds);
 
         await prisma?.$transaction(
             orderedListIds.map((listId: number, index: number) =>

@@ -38,6 +38,8 @@ export async function POST(req: NextRequest){
             }
         })
 
+        console.log("user created:", user)
+
         return NextResponse.json({
             message: "Signup successfull",
             username: body.email

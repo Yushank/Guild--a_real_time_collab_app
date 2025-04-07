@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation";
 import { useBoards } from "../hooks";
 import { BoardsCard } from "../components/Boards";
 import CreateBoard from "../components/CreateBoard";

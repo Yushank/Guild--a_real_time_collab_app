@@ -116,10 +116,27 @@ export const useList = ({ boardId }: { boardId: Id }) => {
         }
         socket.on("list", handleNewList)
 
+
+        // FOR  REAL-TIME LIST TITLE UPDATE
+        const handleNewUpdatedList = (updatedListTitle: list) =>{
+            const id = updatedListTitle.id;
+            console.log("websocket received updated title list:", updatedListTitle)
+            setLists(prevLists => 
+                prevLists.map(list =>
+                    list.id === id ? {...list, ...updatedListTitle} : list
+                )
+            )
+        }
+        socket.on("updatedListTitle", handleNewUpdatedList);
+
         return () => {
             socket.off("list", handleNewList);
+            socket.off("updatedListTitle", handleNewUpdatedList);
         }
+
+        
     }, [boardId]);
+
 
     return { lists, setLists };
 }
@@ -181,8 +198,21 @@ export const useAllCards = ({ boardId }: { boardId: Id }) => {
         }
         socket.on("card", handleNewCard);
 
+        //FOR REAL-TIME CARD CONTENT UPDATE
+        const handleNewUpdatedCard = (updatedCardContent: Card) => {
+            const id = updatedCardContent.id;
+            console.log("websocket received updated card content:", updatedCardContent);
+            setAllCards(prevCards => 
+                prevCards.map(card =>
+                    card.id === id ? {...card, ...updatedCardContent} : card
+                )
+            )
+        }
+        socket.on("updatedCardContent", handleNewUpdatedCard);
+
         return () => {
-            socket.off("card", handleNewCard)
+            socket.off("card", handleNewCard);
+            socket.off("updatedCardContent", handleNewUpdatedCard)
         }
 
     }, [boardId]);

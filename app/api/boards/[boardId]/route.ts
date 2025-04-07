@@ -8,6 +8,13 @@ import client from "@/db"
 
 export async function GET(req: NextRequest){
     const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        return NextResponse.json({
+            msg: "Unauthorized - No valid session user"
+        }, { status: 401 })
+    }
+    
     const userId = session.user.id ? parseInt(session.user.id) : undefined;
 
     if(!userId){
@@ -57,6 +64,13 @@ export async function GET(req: NextRequest){
 
 export async function POST(req: NextRequest){
     const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        return NextResponse.json({
+            msg: "Unauthorized - No valid session user"
+        }, { status: 401 })
+    }
+
     const userId = session.user.id ? parseInt(session.user.id) : undefined;
 
     if(!userId){

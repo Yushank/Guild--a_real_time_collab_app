@@ -22,12 +22,13 @@ interface Props {
 }
 
 function ColumnContainer(props: Props) {
-    const { column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask, boardId } = props;
+    const { column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask } = props;
 
     const [editMode, setEditMode] = useState(false);
     const [isAddingTask, setIsAddingTask] = useState(false);
     const [newTask, setNewTask] = useState("");
-    const listId = column.id;
+    const [updateColumnValue, setUpdateColumnValue] = useState(column.title);
+    // const listId = column.id;
     // const { cards } = useCard(boardId, listId)
 
     const tasksId = useMemo(() => {
@@ -71,15 +72,18 @@ function ColumnContainer(props: Props) {
                     {!editMode ? (column.title) :
                         (<input
                             className="bg-white text-black focus:border-blue-900 dark:focus:border-rose-500 border rounded outline-none px-2 w-full"
-                            value={column.title}
-                            onChange={(e) => updateColumn(column.id, e.target.value)}
+                            value={updateColumnValue}
+                            onChange={(e) => setUpdateColumnValue(e.target.value)}
                             autoFocus
-                            onBlur={() => setEditMode(false)}
-                            onKeyDown={e => {
-                                if (e.key !== "Enter") {
-                                    return;
-                                }
+                            onBlur={() =>{ 
+                                updateColumn(column.id, updateColumnValue);    
                                 setEditMode(false)
+                            }}
+                            onKeyDown={e => {
+                                if (e.key === "Enter") {
+                                    updateColumn(column.id, updateColumnValue); 
+                                    setEditMode(false)
+                                }
                             }} />)}
                 </div>
 

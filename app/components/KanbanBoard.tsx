@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import PlusIcon from "../icons/PlusIcon"
-import { Board, Card, Column, Id, Task, updatedCardOrder } from "../types";
+import { Card, Column, Id, Task, updatedCardOrder } from "../types";
 import ColumnContainer from "./ColumnContainer";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { arrayMove, SortableContext } from "@dnd-kit/sortable"
@@ -170,14 +170,27 @@ function KanbanBoard() {
     }
 
     function updateColumn(id: Id, title: string) {
-        const newColumns = columns.map(col => {
+        console.log("title recieved after updating column title:", title)
+        // const newColumns = columns.map(col => {
+        //     if (col.id !== id) {
+        //         return col;
+        //     }
+        //     return { ...col, title }
+        // });
+
+        const newLists = lists.map(col => {
             if (col.id !== id) {
                 return col;
             }
             return { ...col, title }
         });
 
-        setColumns(newColumns);
+        submitUpdatedListTitle(id, boardId, title);
+
+        // setColumns(newColumns);
+        setLists(newLists);
+        console.log("columns state after updating col title:", columns)
+        console.log("columns state after updating col title:", lists)
     }
 
     async function createTask(columnId: Id, content: string) {
@@ -200,7 +213,7 @@ function KanbanBoard() {
     }
 
     function updateTask(id: Id, content: string) {
-        const newTasks = tasks.map(task => {
+        const newTasks = allCards.map(task => {
             if (task.id !== id) {
                 return task;
             }
@@ -208,7 +221,8 @@ function KanbanBoard() {
             return { ...task, content }
         });
 
-        setTasks(newTasks)
+        submitUpdatedCardContent(id, content, boardId);
+        setAllCards(newTasks)
     }
 
     function onDragStart(event: DragStartEvent) {
@@ -355,6 +369,7 @@ const submitUpdatedListOrder = async (orderedListIds: Id[], boardId: Id) => {
         // const orderedListIds = columns.map(col=> col.id); 
         console.log("orderedListIds:", orderedListIds)
         const response = await axios.put(`/api/boards/${boardId}/lists`, {
+            type: "updateListOrder",
             orderedListIds
         });
         console.log("Updated lists order:", response.data);
@@ -385,6 +400,7 @@ const submitCardHandler = async (content: string, boardId: Id, columnId: Id) => 
 const submitUpdatedCardOrder = async (updatedCards: updatedCardOrder[], boardId: Id) => {
     try {
         const response = await axios.put(`/api/boards/${boardId}/allcards`, {
+            type: "updateCardOrder",
             cards: updatedCards
         });
         console.log("New order sending to backend:", updatedCards)
@@ -422,6 +438,36 @@ const submitDeleteCard = async (id: Id, boardId: Id) => {
         console.log("DELETE rqst for card is sent:", response);
     } catch(error){
         console.error("Failed to delte card:", error)
+    }
+}
+
+const submitUpdatedListTitle = async (id: Id, boardId: Id, title: string) => {
+    try{
+        const response = await axios.put(`/api/boards/${boardId}/lists`, {
+            type: "updateListTitle",
+            id: id,
+            title: title
+        });
+        console.log("updated list title:", response);
+        return response.data
+    }
+    catch(error){
+        console.error("failed to update list title:", error)
+    }
+}
+
+const submitUpdatedCardContent = async (id: Id, content: string, boardId: Id) => {
+    try{
+        const response = await axios.put(`/api/boards/${boardId}/allcards`, {
+            type: "updateCardContent",
+            id: id,
+            content: content
+        });
+        console.log("updated card content:", response);
+        return response.data
+    }
+    catch(error){
+        console.error("failed to updated card content:", error)
     }
 }
 

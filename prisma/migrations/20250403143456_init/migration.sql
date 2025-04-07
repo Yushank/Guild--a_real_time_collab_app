@@ -25,6 +25,7 @@ CREATE TABLE "Board" (
 CREATE TABLE "List" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
+    "order" INTEGER NOT NULL DEFAULT 0,
     "boardId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -37,6 +38,7 @@ CREATE TABLE "Cards" (
     "id" SERIAL NOT NULL,
     "content" TEXT NOT NULL,
     "dueDate" TIMESTAMP(3),
+    "order" INTEGER NOT NULL DEFAULT 0,
     "priority" INTEGER,
     "listId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -60,10 +62,10 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE INDEX "_BoardMembers_B_index" ON "_BoardMembers"("B");
 
 -- AddForeignKey
-ALTER TABLE "List" ADD CONSTRAINT "List_boardId_fkey" FOREIGN KEY ("boardId") REFERENCES "Board"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "List" ADD CONSTRAINT "List_boardId_fkey" FOREIGN KEY ("boardId") REFERENCES "Board"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Cards" ADD CONSTRAINT "Cards_listId_fkey" FOREIGN KEY ("listId") REFERENCES "List"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Cards" ADD CONSTRAINT "Cards_listId_fkey" FOREIGN KEY ("listId") REFERENCES "List"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_BoardMembers" ADD CONSTRAINT "_BoardMembers_A_fkey" FOREIGN KEY ("A") REFERENCES "Board"("id") ON DELETE CASCADE ON UPDATE CASCADE;

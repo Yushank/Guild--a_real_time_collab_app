@@ -45,3 +45,9 @@ export type updatedCardOrder = {
         listId: Id;
         content: string;
 }
+
+export type CardUpdate = {
+    id: number;
+    order: number;
+    listId: number;
+  }

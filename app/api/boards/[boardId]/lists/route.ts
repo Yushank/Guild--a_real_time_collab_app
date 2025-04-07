@@ -69,33 +69,73 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ boar
 
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ boardId: string }> }) {
-    try {
-        const { orderedListIds } = await req.json();
-        console.log("ordered list id received:", orderedListIds);
+    const body = await req.json();
+    console.log("Full request body:", body);
 
-        await prisma?.$transaction(
-            orderedListIds.map((listId: number, index: number) =>
-                prisma?.list.update({
-                    where: {
-                        id: listId
-                    },
-                    data: {
-                        order: index
-                    }
-                })
-            )
-        );
+    // UPDATE LIST ORDER ROUTE FUNCTION
+    if (body.type === "updateListOrder") {
+        try {
 
-        return NextResponse.json({
-            msg: "List reordered successfully"
-        });
+            const { orderedListIds } = body;
+            console.log("ordered list id received:", orderedListIds);
+            console.log("params:", params)
+
+            await prisma?.$transaction(
+                orderedListIds.map((listId: number, index: number) =>
+                    prisma?.list.update({
+                        where: {
+                            id: listId
+                        },
+                        data: {
+                            order: index
+                        }
+                    })
+                )
+            );
+
+            return NextResponse.json({
+                msg: "List reordered successfully"
+            });
+        }
+        catch (error) {
+            console.error("Error reordering list", error);
+            return NextResponse.json({
+                msg: "failed to reorder list"
+            }, { status: 500 })
+        }
     }
-    catch (error) {
-        console.error("Error reordering list", error);
-        return NextResponse.json({
-            msg: "failed to reorder list"
-        }, { status: 500 })
-    }
+
+    // UPDATE LIST TITLE ROUTE FUNCTION
+    if(body.type === "updateListTitle"){
+        try{
+            const {id, title} = body;
+            console.log("updating list id received:", id);
+            console.log("updating list title received:", title);
+
+            const list = await client.list.update({
+                where: {
+                    id: id
+                }, 
+                data: {
+                    title: title
+                }
+            });
+
+            console.log("updated list:", list);
+            io.emit("updatedListTitle", list);
+            io.emit("testEvent", { msg: "This is a test emit from PUT route" });
+
+            return NextResponse.json({
+                msg: "List title updated successfully"
+            })
+        }
+        catch(error){
+            console.error("Error updating list title", error);
+            return NextResponse.json({
+                msg: "failed to update list title"
+            }, {status: 500})
+        }
+    }   
 }
 
 

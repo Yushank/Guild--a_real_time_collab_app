@@ -14,6 +14,7 @@ interface Props {
 function TaskCard({ task, deleteTask, updateTask }: Props) {
     const [mouseIsOver, setMouseIsOver] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [updateCardValue, setUpdateCardValue] = useState(task.content);
 
     const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
         id: task.id,
@@ -57,15 +58,18 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         ) : (<input
             className="bg-white text-black focus:border-rose-500 border rounded outline-none px-2 w-full"
             type='text'
-            value={task.content}
-            onChange={(e) => updateTask(task.id, e.target.value)}
+            value={updateCardValue}
+            onChange={(e) => setUpdateCardValue(e.target.value)}
             autoFocus
-            onBlur={() => setEditMode(false)}
+            onBlur={() =>{ 
+                updateTask(task.id, updateCardValue);
+                setEditMode(false)}}
             onKeyDown={e => {
-                if (e.key !== "Enter") {
-                    return
+                if (e.key === "Enter") {
+                    updateTask(task.id, updateCardValue);
+                    setEditMode(false);
                 }
-                setEditMode(false);
+                
             }}
         />)}
             {mouseIsOver && (

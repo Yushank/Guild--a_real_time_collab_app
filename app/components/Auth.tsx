@@ -30,7 +30,7 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
                     password: postInputs.password,
                     redirect: false
                 });
-                router.push("/home")
+                router.push("/")
             } else {
                 console.error("Signup failed")
             }
@@ -42,17 +42,25 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
         }
     }
 
-    async function sendRequestSignin(){
-        try{
+    async function sendRequestSignin() {
+        try {
             const res = await signIn("credentials", {
                 username: postInputs.email,
                 password: postInputs.password,
                 redirect: false,
             })
-            console.log(res);
-            router.push("/boards")
+            console.log("Sign-in response:", res);
+
+            // Check if authentication failed
+            if (res?.error) {
+                alert("Not registered or Invalid input");
+                return;
+            }
+
+            // Only redirect if authentication is successful
+            router.push("/boards");
         }
-        catch(error){
+        catch (error) {
             alert("error while singing in");
             console.log(error)
         }

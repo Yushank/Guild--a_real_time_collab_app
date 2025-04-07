@@ -1,11 +1,12 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import client from "@/db"
-import { JWT } from "next-auth/jwt";
+// import { JWT } from "next-auth/jwt";
 import bcrypt from 'bcrypt'
-import { User } from "@/app/types";
+// import { User } from "@/app/types";
+import { NextAuthOptions } from "next-auth";
 
 
-export const authOptions = {
+export const authOptions : NextAuthOptions = {
     providers: [
         CredentialsProvider({
             name: "credentials",
@@ -41,14 +42,14 @@ export const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
 
     callbacks: {
-        jwt: async ({ token, user }: { token: JWT; user: User }) => {
+        jwt: async ({ token, user }) => {
             if (user) {
                 token.uid = user.id;
             }
             return token;
         },
 
-        session: async ({ session, token }: { token: JWT; session: any }) => {
+        session: async ({ session, token }) => {
             if (session.user) {
                 session.user.id = token.uid as string;
             }

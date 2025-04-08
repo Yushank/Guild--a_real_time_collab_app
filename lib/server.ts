@@ -1,9 +1,9 @@
 import { Server } from "socket.io";
 import type {Socket} from "socket.io"
 
-declare global {
-    var io: Server | undefined;
-}
+// declare global {
+//     const io: Server | undefined;
+// }
 
 const io = global.io || new Server(5001, {  // prevents creating multiple 5001 server and causing error
     cors: {

@@ -29,7 +29,7 @@ function KanbanBoard() {
 
     const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 
-    const [tasks, setTasks] = useState<Task[]>([]);
+    // const [tasks, setTasks] = useState<Task[]>([]);
 
     const [activeTask, setActiveTask] = useState<Card | null>(null);
 

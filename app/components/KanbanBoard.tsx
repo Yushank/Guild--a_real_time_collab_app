@@ -293,14 +293,18 @@ function KanbanBoard() {
 
         setAllCards((tasks) => {
             const activeTaskIndex = tasks.findIndex((t) => t.id === activeId);
-            const overTaskIndex = tasks.findIndex((t) => t.id === overId);
+            // const overTaskIndex = tasks.findIndex((t) => t.id === overId);
 
             if (activeTaskIndex === -1) return tasks; //prevent errors
 
             const updatedTasks = [...tasks];
             const movedTask = { ...updatedTasks[activeTaskIndex] };
 
-            if (isActiveTask && isOverTask) {
+            if (isOverTask) {
+                const overTaskIndex = tasks.findIndex((t) => t.id === overId);
+                if (activeTaskIndex === -1) return tasks;
+
+                //update list id if moving to a different list
                 if (tasks[overTaskIndex]) {
                     if (tasks[activeTaskIndex].listId !== tasks[overTaskIndex].listId) {
                         movedTask.listId = tasks[overTaskIndex].listId
@@ -310,8 +314,8 @@ function KanbanBoard() {
                     updatedTasks.splice(overTaskIndex, 0, movedTask); //insert to new position
                 }
             }
-
-            if (isActiveTask && isOverColumn) {
+            // Case 2: Dragging over a column (including empty lists)
+            else if (isOverColumn) {
                 movedTask.listId = overId  //move to empty list
 
                 updatedTasks.splice(activeTaskIndex, 1);
@@ -324,6 +328,7 @@ function KanbanBoard() {
             // }));
 
 
+            // Reorder tasks and update backend
             const groupedByList = new Map<Id, Card[]>();
             updatedTasks.forEach(task => {
                 if (!groupedByList.has(task.listId)) {

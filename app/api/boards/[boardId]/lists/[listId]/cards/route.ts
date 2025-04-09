@@ -5,13 +5,13 @@ import client from '@/db'
 import { io } from "@/lib/server";
 
 
-export async function POST(req: NextRequest){
-    const {content, listId} = await req.json();
-    console.log("Recieved data", {content, listId})
+export async function POST(req: NextRequest) {
+    const { content, listId } = await req.json();
+    console.log("Recieved data", { content, listId })
 
-    try{
-        const cardCount = await  client.cards.count({
-            where:{
+    try {
+        const cardCount = await client.cards.count({
+            where: {
                 listId
             }
         })
@@ -30,25 +30,27 @@ export async function POST(req: NextRequest){
             card
         });
     }
-    catch(error){
+    catch (error) {
         return NextResponse.json({
             msg: `Failed to create card: ${error}`
         })
     }
 }
 
-export async function GET(req: NextRequest, {params}: {params: {listId: string}}){
-    try{
-
-        if(!params.listId){
-            return NextResponse.json({
-                msg: "board id and list id is required"
-            }, {status: 400})
-        }
+export async function GET(req: NextRequest, { params }: { params: Promise<{ listId: string }> }) {
+    try {
 
         const listId = parseInt((await params).listId)
+
+        if (!listId) {
+            return NextResponse.json({
+                msg: "board id and list id is required"
+            }, { status: 400 })
+        }
+
+        // const listId = parseInt((await params).listId)
         const cards = await client.cards.findMany({
-            where:{
+            where: {
                 listId: listId
             },
             orderBy: {
@@ -57,10 +59,10 @@ export async function GET(req: NextRequest, {params}: {params: {listId: string}}
         });
 
         return NextResponse.json(cards);
-    }catch(error){
+    } catch (error) {
         console.error("Error fetching cards:", error);
         return NextResponse.json({
             msg: `Failed to fetch cards: ${error}`
-        }, {status: 500})
+        }, { status: 500 })
     }
 }

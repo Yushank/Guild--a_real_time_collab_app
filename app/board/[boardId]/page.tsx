@@ -52,7 +52,7 @@ export default function Board(){
     }
     return (
         <div>
-            <KanbanBoard board = {board}></KanbanBoard>
+            <KanbanBoard></KanbanBoard>
         </div>
     )
 }

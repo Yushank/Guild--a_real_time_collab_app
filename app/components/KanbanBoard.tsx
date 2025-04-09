@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import PlusIcon from "../icons/PlusIcon"
-import { Card, Column, Id, Task, updatedCardOrder } from "../types";
+import { Card, Column, Id, updatedCardOrder } from "../types";
 import ColumnContainer from "./ColumnContainer";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { arrayMove, SortableContext } from "@dnd-kit/sortable"
